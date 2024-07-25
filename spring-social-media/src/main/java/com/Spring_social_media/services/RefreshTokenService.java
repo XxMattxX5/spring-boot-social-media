@@ -24,19 +24,22 @@ public class RefreshTokenService {
     UserRepository userRepository;
 
     public RefreshToken createRefreshToken(User user, String deviceId) {
+        String expires = System.getenv("REFRESH_EXPIRES");
+        int refreshExpires = Integer.parseInt(expires);
         try {
-            RefreshToken refreshToken = findByDeviceId(deviceId);
+            RefreshToken refreshToken = findByUserAndDeviceId(user, deviceId);
             refreshToken.setToken(UUID.randomUUID().toString());
-            refreshToken.setExpiryDate(Instant.now().plusMillis(600000));
+            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpires));
+            
             return refreshTokenRepository.save(refreshToken);
 
         } catch(Exception e) {
-
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.setUser(userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User not found")));
             refreshToken.setToken(UUID.randomUUID().toString());
-            refreshToken.setExpiryDate(Instant.now().plusMillis(600000));
+            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpires));
             refreshToken.setDeviceId(deviceId);
+            
             return refreshTokenRepository.save(refreshToken);
         }
     }
@@ -45,12 +48,18 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByToken(token).orElseThrow(() -> new RefreshTokenNotFoundException(token +"Token not found"));
     }
 
-    public RefreshToken findByUser(User user) {
-        return refreshTokenRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Token not found for user"));
+    public RefreshToken findByDeviceId(String deviceId) {
+        return refreshTokenRepository.findByDeviceId(deviceId).orElseThrow(() -> new RefreshTokenNotFoundException("Token not found"));
     }
 
-    public RefreshToken findByDeviceId(String deviceId) {
-        return refreshTokenRepository.findByDeviceId(deviceId).orElseThrow(() -> new RuntimeException("Token not found for deviceId"));
+    public RefreshToken findByTokenAndDeviceId(String token, String deviceId) {
+        
+        return refreshTokenRepository.findByTokenAndDeviceId(token, deviceId).orElseThrow(() -> new RefreshTokenNotFoundException("Token: " + token + " or " + "Device: " + deviceId + " Not Found"));
+    }
+
+    public RefreshToken findByUserAndDeviceId(User user, String deviceId) {
+        
+        return refreshTokenRepository.findByUserAndDeviceId(user, deviceId).orElseThrow(() -> new RefreshTokenNotFoundException("User: " + user.getUsername() + " or " + "Device: " + deviceId + " Not Found"));
     }
 
     public RefreshToken verifyExpiration(RefreshToken token){
@@ -59,12 +68,6 @@ public class RefreshTokenService {
             throw new RefreshTokenExpiredException(token.getToken() + " Refresh token is expired. Please make a new login..!");
         }
         return token;
-    }
-
-    public void verifyDevice(RefreshToken token, String deviceId) {
-        if (!token.getDeviceId().equals(deviceId)) {
-            throw new RefreshTokenWrongDeviceException(token.getDeviceId() + " "+ deviceId + " Device Id does not match device id on token");
-        }
     }
 
 }

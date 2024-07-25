@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
+import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
+const NavBar = dynamic(() => import("./components/NavBar"), {
+  ssr: false,
+});
+const Footer = dynamic(() => import("./components/Footer"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",

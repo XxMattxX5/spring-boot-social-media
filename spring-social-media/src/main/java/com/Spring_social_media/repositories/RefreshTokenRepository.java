@@ -9,5 +9,7 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Int
     Optional<RefreshToken> findByUser(User user);
     Optional<RefreshToken> findByToken(String token);
     Optional<RefreshToken> findByDeviceId(String deviceId);
+    Optional<RefreshToken> findByTokenAndDeviceId(String token, String deviceId);
+    Optional<RefreshToken> findByUserAndDeviceId(User user, String deviceId);
 
 }

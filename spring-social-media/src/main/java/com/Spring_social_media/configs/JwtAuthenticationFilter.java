@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import jakarta.servlet.http.Cookie;
 
 import java.io.IOException;
 
@@ -41,15 +42,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @NonNull HttpServletResponse response,
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        final Cookie[] cookies = request.getCookies();
+        String access_cookie = null;
+        
+        if (cookies == null) {
+            response.setStatus(401);
             filterChain.doFilter(request, response);
             return;
         }
 
+        for (Cookie cookie : cookies) {
+            if ("access_token".equals(cookie.getName())) {
+                access_cookie = cookie.getValue();
+            }
+        }
+        
+        if (access_cookie == null) {
+            response.setStatus(401);
+            filterChain.doFilter(request, response);
+            return;
+        } 
         try {
-            final String jwt = authHeader.substring(7);
+            
+            final String jwt = access_cookie;
             final String userEmail = jwtService.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,6 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
+            response.setStatus(401);
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }

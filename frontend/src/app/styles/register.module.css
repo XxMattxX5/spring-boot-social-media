@@ -1,24 +1,32 @@
-#login_container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  box-shadow: 0px 2px 10px #ccc;
-  overflow-y: unset;
-  position: relative;
-  margin-bottom: 5px;
+#register_form_container {
+  margin-top: 180px;
+  margin-bottom: 50px;
 }
-
-#login_box {
-  align-content: center;
+#register_container {
+  display: flex;
+  max-width: 1200px;
+  box-shadow: 0px 2px 10px #ccc;
+  background-color: white;
+  margin: 0 auto;
+}
+#register_box {
+  flex-grow: 1;
   padding: 30px;
 }
+.register_input_container {
+  max-height: 370px;
 
-.login_field_boxes {
-  margin: 5px 0;
+  overflow-y: scroll;
+}
+
+#register_image_box {
+  flex-grow: 1;
   position: relative;
 }
-.login_field_labels {
-  margin-bottom: 3px;
+.register_field_boxes {
+  margin-bottom: 10px;
+}
+.register_field_labels {
   font-weight: bold;
 }
 .field_inputs {
@@ -26,14 +34,16 @@
   font-size: 20px;
   color: black;
   background-color: white;
-  padding: 10px;
-  padding-left: 0px;
+  padding: 10px 0px;
   padding-right: 50px;
   border: none;
   border-bottom: 1px solid #00abf7;
 }
 .field_inputs + fieldset {
   border: none;
+}
+.register_errors {
+  margin-bottom: 5px;
 }
 .visibilityIcon {
   position: absolute;
@@ -42,21 +52,22 @@
   bottom: 0;
   margin: auto 0;
 }
-.login_error {
-  margin: 0 auto;
-}
-.login_buttons {
-  margin: 15px auto;
+
+.register_buttons {
+  margin: 15px 0px;
   display: flex;
   flex-wrap: wrap;
 }
-.login_btn {
+
+.register_btn {
   text-transform: unset;
   background-color: #00abf7;
   font-weight: bold;
   color: white;
+  flex-grow: 1;
 }
-.sign_up_btn {
+
+.back_to_login {
   text-align: center;
   text-transform: unset;
   border: 1px solid black;
@@ -68,37 +79,33 @@
   display: block;
   padding: 7px;
   border-radius: 4px;
+  flex-grow: 1;
 }
-.sign_up_btn:hover {
+.back_to_login:hover {
   background-position: left bottom;
   color: white;
 }
 
-#login_image_box {
-  position: relative;
-}
 .welcome_msg {
+  position: absolute;
   top: 50%;
   width: 100%;
   text-align: center;
   transform: translate(0, -50%);
-  position: absolute;
-  color: white;
 }
 .welcome_header {
-  text-shadow: 0 0 4px #030303;
+  color: white;
 }
 
 @media only screen and (max-width: 800px) {
-  #login_image_box {
+  #register_image_box {
     display: none;
   }
-  #login_box {
+  #register_box {
     max-width: 100%;
     flex-basis: 100%;
-    padding: 20px 0;
   }
-  #login_container {
+  #register_container {
     flex-basis: 95%;
   }
 }

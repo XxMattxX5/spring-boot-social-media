@@ -10,10 +10,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Date;
 import java.util.Collection;
 import java.util.List;
+import jakarta.persistence.CascadeType;
 
 
 
@@ -28,7 +30,7 @@ public class User implements UserDetails{
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 100, nullable = false)
+    @Column(unique = true,length = 100, nullable = false)
     private String email;
 
     @Column(unique = true, length = 100, nullable = false)
@@ -37,6 +39,9 @@ public class User implements UserDetails{
     @Column(length = 100, nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String profilePicture = "blank-profile-picture_vfkf6q";
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -44,6 +49,9 @@ public class User implements UserDetails{
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens;
 
     public Integer getId() {
         return id;
@@ -91,6 +99,13 @@ public class User implements UserDetails{
 
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setProfilePicture(String pic) {
+        this.profilePicture = pic;
+    }
+    public String getProfilePicture() {
+        return profilePicture;
     }
 
     @Override

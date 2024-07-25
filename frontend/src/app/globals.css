@@ -87,15 +87,13 @@ body {
   position: relative;
 }
 
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
+#loading_container span {
+  width: 300px;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 a {
   color: inherit;
@@ -211,6 +209,14 @@ a {
 }
 .nav_profile_drop_btns {
   display: block;
+  padding: 0;
+  width: 80px;
+  height: 30px;
+}
+.nav_profile_drop_btns a {
+  height: 100%;
+  display: block;
+  align-content: center;
 }
 #footer {
   position: absolute;
@@ -223,6 +229,14 @@ a {
 }
 #backtotop_btn:hover {
   background-color: rgb(20, 20, 20);
+}
+
+#refresh_loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  justify-content: center;
 }
 
 @media (prefers-color-scheme: dark) {

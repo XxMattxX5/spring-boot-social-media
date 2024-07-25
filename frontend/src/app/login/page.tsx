@@ -1,9 +1,9 @@
 import React from "react";
-import { Typography, Grid, Alert, TextField } from "@mui/material";
+import { Grid } from "@mui/material";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-const LoginForm = dynamic(() => import("../components/LoginForm"), {
+const LoginForm = dynamic(() => import("./LoginForm"), {
   ssr: false,
 });
 

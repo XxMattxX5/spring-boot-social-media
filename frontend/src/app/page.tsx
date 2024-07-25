@@ -1,9 +1,17 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { Grid } from "@mui/material";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Spring Social",
+  description: "...",
+};
 
 export default function Home() {
   return (
     <main className={styles.main}>
+      <Grid></Grid>
       <div className={styles.description}>
         <p>
           Get started by editing&nbsp;
