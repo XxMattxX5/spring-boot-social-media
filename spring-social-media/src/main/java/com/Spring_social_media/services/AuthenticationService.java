@@ -5,6 +5,8 @@ import com.Spring_social_media.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.Spring_social_media.models.Settings;
+import com.Spring_social_media.repositories.SettingsRepository;
 import com.Spring_social_media.repositories.UserRepository;
 import com.Spring_social_media.responses.RegisterResponse;
 import com.Spring_social_media.dtos.RegisterUserDto;
@@ -31,26 +33,35 @@ public class AuthenticationService {
 
     private final JwtService jwtService;
 
+    private final SettingsRepository settingsRepository;
+
     public AuthenticationService(
         UserRepository userRepository,
         AuthenticationManager authenticationManager,
         PasswordEncoder passwordEncoder,
-        JwtService jwtService
+        JwtService jwtService,
+        SettingsRepository settingsRepository
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.settingsRepository = settingsRepository;
     }
 
     public User signup(RegisterUserDto input) {
         User user = new User();
+    
         user.setUsername(input.getUsername().toLowerCase());
         user.setName(input.getName());
         user.setEmail(input.getEmail().toLowerCase());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
+        User savedUser = userRepository.save(user);
+        Settings settings = new Settings();
+        settings.setUser(savedUser);
+        settingsRepository.save(settings);
 
-        return userRepository.save(user);
+        return savedUser;
     }
 
     public RegisterResponse signupValidation(RegisterUserDto input) {
@@ -150,19 +161,22 @@ public class AuthenticationService {
         deviceID.setHttpOnly(true);
         deviceID.setSecure(true);
         deviceID.setPath("/");
-        
-        Cookie profile_picture = new Cookie("profile_picture", refreshToken.getUser().getProfilePicture());
-        profile_picture.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
-        profile_picture.setHttpOnly(false);
-        profile_picture.setSecure(true);
-        profile_picture.setPath("/");
+
+        Cookie isLogged = new Cookie("isLogged", "true");
+        isLogged.setPath("/");
+        isLogged.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
+
+        Cookie theme = new Cookie("theme", refreshToken.getUser().getSettings().getColorTheme());
+        theme.setPath("/");
+        theme.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
 
         // Adds all the cookies to the response
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
         response.addCookie(username);
         response.addCookie(deviceID);
-        response.addCookie(profile_picture);
+        response.addCookie(isLogged);
+        response.addCookie(theme);
 
         return response;
     }
@@ -190,16 +204,20 @@ public class AuthenticationService {
         deviceID.setMaxAge(0);
         deviceID.setPath("/");
 
-        Cookie profile_picture = new Cookie("profile_picture", "");
-        profile_picture.setMaxAge(0);
-        profile_picture.setPath("/");
+        Cookie isLogged = new Cookie("isLogged", "");
+        isLogged.setMaxAge(0);
+        isLogged.setPath("/");
+        Cookie theme = new Cookie("theme", "");
+        theme.setMaxAge(0);
+        theme.setPath("/");
         
         // Adds the cleared cookies to the response
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
         response.addCookie(username);
         response.addCookie(deviceID);
-        response.addCookie(profile_picture);
+        response.addCookie(isLogged);
+        response.addCookie(theme);
 
         return response;
     }

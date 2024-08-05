@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import styles from "../styles/profile.module.css";
 import { Metadata } from "next";
 
-const ProfileMenu = dynamic(() => import("./ProfileMenu"), {
+const ProfileMenu = dynamic(() => import("./components/ProfileMenu"), {
   ssr: false,
 });
 

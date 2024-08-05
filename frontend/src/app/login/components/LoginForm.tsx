@@ -11,14 +11,16 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import styles from "../login.module.css";
+import styles from "../../styles/login.module.css";
 import Image from "next/image";
-import login_picture from "../../../public/images/login_picture.jpg";
+import login_picture from "../../../../public/images/login_picture.jpg";
 import { v4 as uuidv4 } from "uuid";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "../../hooks/Auth";
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -43,36 +45,8 @@ const LoginForm = () => {
     return deviceId;
   };
 
-  const loginUser = () => {
-    const headers = {
-      Accept: "*/*",
-      "Content-Type": "application/json",
-    };
-
-    fetch(`${backendUrl}/auth/login`, {
-      method: "POST",
-      headers: headers,
-      credentials: "include",
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        deviceId: getDeviceId(),
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          window.location.reload();
-        } else {
-          return res.json();
-        }
-      })
-      .then((d) => {
-        if (d) {
-          setLoginError(d.message);
-        }
-      })
-
-      .catch((error) => console.error("error:", error));
+  const loginUser = async () => {
+    setLoginError(await login(username, password, getDeviceId()));
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

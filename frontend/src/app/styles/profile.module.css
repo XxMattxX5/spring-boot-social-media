@@ -9,6 +9,7 @@
   display: flex;
   transition: left 300ms linear;
   margin-top: 50px;
+  max-height: 100vh;
 }
 #profile_image_container {
   margin-bottom: 25px;
@@ -27,7 +28,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 3px #000;
-  background-color: white;
+  max-height: 500px;
 }
 #profile_nav_content_box {
   flex-grow: 1;
@@ -41,7 +42,6 @@
   padding-left: 20px;
   justify-content: left;
   text-transform: none;
-  color: black;
 }
 
 .profile_nav_icons {
@@ -60,6 +60,8 @@
   min-height: 600px;
   padding: 25px;
   margin-top: 50px;
+  margin-bottom: 20px;
+  background-color: white;
 }
 .profile_menu_header {
   margin-top: 15px;
@@ -81,6 +83,155 @@
   border-radius: 0%;
 }
 
+/* Dashboard Styles */
+#dashboard_content_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+.dashboard_box {
+  flex-grow: 1;
+}
+.dashboard_box_header {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+.dashboard_box_header svg {
+  margin-right: 5px;
+}
+.dashboard_main_container {
+  box-shadow: 0 0 3px #000;
+  padding-bottom: 10px;
+  overflow-x: scroll;
+  border-radius: 8px;
+}
+.dashboard_box_content {
+  height: 400px;
+  overflow-y: auto;
+  min-width: 400px;
+}
+.dashboard_box_content_header {
+  display: flex;
+  text-align: center;
+  gap: 20px;
+  padding: 5px 10px;
+  min-width: 400px;
+  background-color: #00abf7;
+  color: white;
+}
+.dashboard_follow_search {
+  display: flex;
+  position: relative;
+  margin-bottom: 5px;
+  border-radius: 0px;
+  min-width: 400px;
+}
+.dashboard_follow_search_input_box {
+  flex-grow: 1;
+}
+.dashboard_follow_search_input_box div {
+  border-radius: 0;
+}
+.dashboard_follow_search_input {
+  height: 5px;
+  min-height: 5px;
+  flex-grow: 1;
+  padding-right: 48px;
+  border-radius: 0;
+}
+.dashboard_follow_search_btn {
+  display: flex;
+  border-radius: 4px;
+  padding: 0px 10px;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  height: 100%;
+}
+
+.dashboard_follow_box {
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+  margin-top: 10px;
+}
+.dashboard_follow_profile_pic {
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.dashboard_follow_box_username {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
+}
+.dashboard_follow_box_date {
+  margin-right: 10px;
+  margin-left: 20px;
+}
+.dashboard_follower_block {
+  border: 1px solid black;
+}
+.dashboard_follower_block:hover {
+  color: white;
+  background-color: #00abf7;
+  border-color: #00abf7;
+}
+.dashboard_no_content {
+  text-align: center;
+  height: 100%;
+  align-content: center;
+  font-size: 25px;
+}
+.dashboard_post_content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+.dashboard_post_content_header {
+  display: flex;
+  text-align: center;
+  gap: 20px;
+  padding: 5px 10px;
+  background-color: #00abf7;
+  color: white;
+}
+
+.dashboard_post_box {
+  min-height: 300px;
+  box-shadow: 0 0 3px #000;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.dashboard_post_header {
+  display: flex;
+  padding: 10px;
+  color: white;
+  background-color: #00abf7;
+}
+.dashboard_post_header_image {
+  border-radius: 50%;
+}
+.dashboard_post_info {
+  margin-left: 10px;
+}
+.dashboard_post_main_content {
+  padding: 20px;
+}
+.dashboard_post_main_content img {
+  max-width: 100%;
+  margin: 0 auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Dashboard Styles End */
+
 /* Account Details Styles */
 #account_details_input_container {
   width: 100%;
@@ -93,6 +244,7 @@
   font-size: 23px;
   height: 10px;
   min-height: 10px;
+  border-radius: 4px;
 }
 .account_details_errors {
   margin-top: 5px;
@@ -114,34 +266,132 @@
   text-align: center;
 }
 #delete_account_btn {
-  background-color: red;
-  color: white;
+  border: 1px solid black;
   width: 100%;
+}
+#delete_account_btn:hover {
+  color: white;
+  background-color: red;
+  border-color: red;
 }
 
 /* Account Details Styles End */
 
+/* Settings Styles */
+#settings_option_container {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  justify-content: space-evenly;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  column-gap: 20px;
+}
+.settings_option_box {
+  /* width: 47%; */
+  flex-grow: 1;
+  flex-basis: 600px;
+}
+.settings_option_label {
+  font-size: 23px;
+}
+.settings_option_dropdown {
+  width: 100%;
+
+  font-size: 21px;
+  border-width: 0;
+}
+.settings_option_dropdown fieldset {
+  border: 0;
+}
+.settings_option_dropdown fieldset:focus {
+  border: none;
+}
+
+.settings_option_dropdown_input {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 0px;
+  border-bottom: 1px solid #00abf7;
+  border-radius: 0px;
+}
+#settings_to_default {
+  margin-top: auto;
+  border: 1px solid black;
+  width: 100%;
+  padding: 10px 0px;
+  margin-bottom: 15px;
+  height: 45px;
+  font-weight: bold;
+}
+#settings_to_default p {
+  font-weight: bold;
+}
+#settings_to_default:hover {
+  background-color: red;
+  border-color: red;
+  color: white;
+}
+/* Settings Styles End */
+
 @media only screen and (max-width: 800px) {
   #profile_nav_container {
-    position: absolute;
-    background-color: white;
+    position: fixed;
     z-index: 1;
     min-width: 300px;
-    margin-top: 0px;
+    margin-top: 0;
     height: 100%;
     margin-left: 0;
+    top: 0;
   }
   #profile_nav_content_box {
-    padding-top: 30px;
+    padding-top: 80px;
   }
   #profile_nav_sidebar {
+    padding-top: 50px;
     display: block;
   }
   #profile_nav {
     box-shadow: none;
   }
   #profile_current_nav_menu {
-    margin-left: 60px;
-    margin-right: 10px;
+    margin-left: 50px;
+    margin-right: 0px;
+    padding: 10px;
+    margin-top: 0px;
+    box-shadow: none;
+    background-color: #eeeeee;
+  }
+  .account_details_input {
+    height: 5px;
+    min-height: 5px;
+  }
+  .account_details_input_label {
+    font-size: 24px;
+  }
+  #account_details_save {
+    padding: 0px;
+  }
+  #account_details_save p {
+    font-size: 15px;
+  }
+  #delete_account_container {
+    align-content: unset;
+  }
+  #delete_account_btn p {
+    font-size: 15px;
+  }
+  #delete_account_warning {
+    font-size: 15px;
+  }
+  .settings_option_box {
+    width: 100%;
+  }
+  .dashboard_post_content {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+  .dashboard_post_main_content p {
+    font-size: 14px;
   }
 }

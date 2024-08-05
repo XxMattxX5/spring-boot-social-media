@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+// import "@mui/material/styles";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import { AuthProvider } from "./hooks/Auth";
+import { StyledEngineProvider } from "@mui/material/styles";
+
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 const inter = Inter({ subsets: ["latin"] });
 const NavBar = dynamic(() => import("./components/NavBar"), {
@@ -22,12 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <NavBar />
-        <div id="main">{children}</div>
-        <Footer />
-      </body>
-    </html>
+    <StyledEngineProvider injectFirst>
+      <AuthProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <NavBar />
+            <div id="main">{children}</div>
+            <Footer />
+          </body>
+        </html>
+      </AuthProvider>
+    </StyledEngineProvider>
   );
 }

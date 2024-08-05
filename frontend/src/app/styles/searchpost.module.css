@@ -1,0 +1,51 @@
+#searchpost_box {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  row-gap: 5px;
+  column-gap: 10px;
+  margin-bottom: 10px;
+}
+.searchpost_search_box {
+  flex-basis: 300px;
+  flex-grow: 5;
+  position: relative;
+  color: inherit;
+}
+.searchpost_search_input_box {
+  height: 40px;
+}
+.searchpost_search_input_box div {
+  color: inherit;
+}
+.searchpost_search_input {
+  padding-right: 40px;
+}
+
+.searchpost_search_btn {
+  height: 40px;
+  position: absolute;
+  right: 0px;
+  border-radius: 0px;
+  color: inherit;
+}
+
+.searchpost_search_type_select_box,
+.searchpost_search_sort_select_box {
+  flex: 1 1 200px;
+  min-width: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.searchpost_search_type_select_box div,
+.searchpost_search_sort_select_box div {
+  height: 40px;
+  color: inherit;
+}
+
+#searchPost_page_buttons {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}

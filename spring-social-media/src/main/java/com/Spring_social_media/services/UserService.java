@@ -48,7 +48,6 @@ public class UserService {
         } 
         
         if (updateInfoResponse.isValid()) {
-            System.out.println("Success");
             user.setName(newName);
             user.setUsername(newUsername.toLowerCase());
             userRepository.save(user);

@@ -1,0 +1,44 @@
+#create_new_post_container {
+  align-content: baseline;
+  box-shadow: 0 0 3px #000;
+  width: 100%;
+  z-index: 6;
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgb(0, 0, 0, 0.7);
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+}
+#create_new_post_close_box {
+  width: 100%;
+  text-align: right;
+  margin-right: 10px;
+}
+#create_new_post_close_box button svg {
+  font-size: 50px;
+}
+#create_new_post_box {
+  padding: 15px;
+  width: 95%;
+  margin: 20px auto;
+  max-width: 1000px;
+  border-radius: 4px;
+}
+#create_new_post_header {
+  text-align: center;
+  padding: 10px 0px;
+  background-color: #00abf7;
+  color: white;
+  margin-bottom: 10px;
+}
+#create_post_button {
+  margin-top: 10px;
+  background-color: #00abf7;
+  color: white;
+}
+
+@media only screen and (max-width: 800px) {
+}

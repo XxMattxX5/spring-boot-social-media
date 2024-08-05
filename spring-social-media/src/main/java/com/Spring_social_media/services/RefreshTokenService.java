@@ -13,6 +13,8 @@ import com.Spring_social_media.exceptions.RefreshTokenWrongDeviceException;
 import com.Spring_social_media.models.RefreshToken;
 import com.Spring_social_media.models.User;
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RefreshTokenService {
@@ -53,7 +55,6 @@ public class RefreshTokenService {
     }
 
     public RefreshToken findByTokenAndDeviceId(String token, String deviceId) {
-        
         return refreshTokenRepository.findByTokenAndDeviceId(token, deviceId).orElseThrow(() -> new RefreshTokenNotFoundException("Token: " + token + " or " + "Device: " + deviceId + " Not Found"));
     }
 

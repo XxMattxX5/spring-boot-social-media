@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Grid,
@@ -8,27 +8,34 @@ import {
   Alert,
   Dialog,
 } from "@mui/material";
-import styles from "../styles/profile.module.css";
+import styles from "../../styles/profile.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { refreshToken } from "../lib/Auth";
+import { useAuth } from "../../hooks/Auth";
 
-type Props = {
-  userInfo: {
-    name: string;
-    username: string;
-    email: string;
-  };
-};
+interface User {
+  name: string;
+  username: string;
+  email: string;
+  profilePicture: string;
+}
 
-const AccountDetails = ({ userInfo }: Props) => {
-  const [name, setName] = useState(userInfo.name);
-  const [username, setUsername] = useState(userInfo.username);
-  const [email, setEmail] = useState(userInfo.email);
+const AccountDetails = () => {
+  const { user, settings, refresh, fetchUser } = useAuth();
+  const theme = settings?.colorTheme || "light";
+  const [name, setName] = useState(user?.name);
+  const [username, setUsername] = useState(user?.username);
+  const [email, setEmail] = useState(user?.email);
   const [errors, setErrors] = useState({ error1: "", error2: "" });
   const [success, setSuccess] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+
+  useEffect(() => {
+    setName(user?.name);
+    setUsername(user?.username);
+    setEmail(user?.email);
+  }, [user]);
 
   const updateInfo = async () => {
     const headers = {
@@ -47,9 +54,10 @@ const AccountDetails = ({ userInfo }: Props) => {
     })
       .then((res) => {
         if (res.ok) {
+          fetchUser();
+          status = true;
           setSuccess("Account Details Updated!");
           setErrors({ error1: "", error2: "" });
-          status = true;
         } else if (res.status === 400) {
           return res.json();
         } else {
@@ -67,8 +75,7 @@ const AccountDetails = ({ userInfo }: Props) => {
       .catch((error) => console.log(error));
 
     if (!status) {
-      const success = await refreshToken();
-      console.log(success);
+      const success = await refresh();
       if (success) {
         updateInfo();
       }
@@ -117,6 +124,7 @@ const AccountDetails = ({ userInfo }: Props) => {
             <Typography
               className={styles.account_details_input_label}
               variant="h4"
+              sx={{ color: theme == "dark" ? "white" : "black" }}
             >
               Name
             </Typography>
@@ -125,6 +133,10 @@ const AccountDetails = ({ userInfo }: Props) => {
               inputProps={{ className: styles.account_details_input }}
               fullWidth
               onChange={handleNameChange}
+              sx={{
+                div: { color: theme == "dark" ? "white" : "black" },
+                backgroundColor: theme == "dark" ? "#33333" : "white",
+              }}
             />
             <Collapse
               in={errors.error1 != ""}
@@ -142,6 +154,7 @@ const AccountDetails = ({ userInfo }: Props) => {
             <Typography
               className={styles.account_details_input_label}
               variant="h4"
+              sx={{ color: theme == "dark" ? "white" : "black" }}
             >
               Username
             </Typography>
@@ -149,7 +162,13 @@ const AccountDetails = ({ userInfo }: Props) => {
               value={username}
               fullWidth
               onChange={handleUsernameChange}
-              inputProps={{ className: styles.account_details_input }}
+              inputProps={{
+                className: styles.account_details_input,
+              }}
+              sx={{
+                div: { color: theme == "dark" ? "white" : "black" },
+                backgroundColor: theme == "dark" ? "#33333" : "white",
+              }}
             />
             <Collapse
               in={errors.error2 != ""}
@@ -167,13 +186,25 @@ const AccountDetails = ({ userInfo }: Props) => {
             <Typography
               className={styles.account_details_input_label}
               variant="h4"
+              sx={{ color: theme == "dark" ? "white" : "black" }}
             >
               Email
             </Typography>
             <TextField
               value={email}
               fullWidth
-              inputProps={{ className: styles.account_details_input }}
+              inputProps={{
+                className: styles.account_details_input,
+              }}
+              sx={{
+                div: {
+                  WebkitTextFillColor:
+                    theme == "dark"
+                      ? "rgb(255,255,255, .38)"
+                      : "rgb(0,0,0, .38)",
+                },
+                backgroundColor: theme == "dark" ? "#33333" : "white",
+              }}
             />
           </Grid>
         </Grid>
@@ -191,11 +222,21 @@ const AccountDetails = ({ userInfo }: Props) => {
         </Button>
       </Grid>
       <Grid item id={styles.delete_account_container}>
-        <Button id={styles.delete_account_btn} onClick={handleDelete}>
+        <Button
+          id={styles.delete_account_btn}
+          sx={{
+            backgroundColor: theme == "dark" ? "#33333" : "white",
+            color: theme == "dark" ? "white" : "red",
+          }}
+          onClick={handleDelete}
+        >
           <DeleteIcon />
           <Typography fontWeight={"bold"}>Delete Account</Typography>
         </Button>
-        <Typography id={styles.delete_account_warning}>
+        <Typography
+          id={styles.delete_account_warning}
+          sx={{ color: theme == "dark" ? "white" : "black" }}
+        >
           Warning!: If you delete your account all settings, account
           information, posts, and friends will be deleted and unrecoverable
         </Typography>

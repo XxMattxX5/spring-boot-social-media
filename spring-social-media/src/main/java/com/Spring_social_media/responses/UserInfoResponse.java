@@ -1,31 +1,25 @@
 package com.Spring_social_media.responses;
 
+import com.Spring_social_media.classes.UserInfo;
+import com.Spring_social_media.classes.SettingsInfo;
+
 public class UserInfoResponse {
-    private String name;
-    private String username;
-    private String email;
+    
+    private UserInfo user;
+    private SettingsInfo settings;
 
-    public void setName(String name) {
-        this.name = name;
+    public UserInfo getUserInfo() {
+        return user;
     }
-    public String getName() {
-        return name;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    public String getUsername() {
-        return username;
+    public void setUserInfo(UserInfo user) {
+        this.user = user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public SettingsInfo getSettingsInfo() {
+        return settings;
     }
-    public String getEmail() {
-        return email;
+    public void setSettingsInfo(SettingsInfo settings) {
+        this.settings = settings;
     }
-
-
 
 }

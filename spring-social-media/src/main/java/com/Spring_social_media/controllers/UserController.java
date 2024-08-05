@@ -1,6 +1,5 @@
 package com.Spring_social_media.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,18 +13,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
 
+import com.Spring_social_media.models.Settings;
+import com.Spring_social_media.classes.UserInfo;
+import com.Spring_social_media.classes.SettingsInfo;
 import com.Spring_social_media.responses.UpdateInfoResponse;
 import com.Spring_social_media.dtos.UpdateInfoDto;
+import com.Spring_social_media.dtos.UpdateSettingsDto;
 import com.Spring_social_media.responses.UserInfoResponse;
 import com.Spring_social_media.models.RefreshToken;
 import com.Spring_social_media.models.User;
 import com.Spring_social_media.repositories.UserRepository;
+import com.Spring_social_media.repositories.SettingsRepository;
 import com.Spring_social_media.services.UserService;
 import com.Spring_social_media.services.JwtService;
 import com.Spring_social_media.services.AuthenticationService;
 import com.Spring_social_media.services.RefreshTokenService;
 
-import java.time.Instant;
 import java.util.Map;
 
 
@@ -34,15 +37,17 @@ import java.util.Map;
 public class UserController {
       
   private final UserRepository userRepository;
+  private final SettingsRepository settingsRepository;
   private final UserService userService;
   private final JwtService jwtService;
   private final AuthenticationService authenticationService;
   private final RefreshTokenService refreshTokenService;
   
 
-  public UserController(UserService userService, UserRepository userRepository, JwtService jwtService, AuthenticationService authenticationService, RefreshTokenService refreshTokenService) {
+  public UserController(UserService userService, UserRepository userRepository, JwtService jwtService, AuthenticationService authenticationService, RefreshTokenService refreshTokenService, SettingsRepository settingsRepository) {
     this.userService = userService;
     this.userRepository = userRepository;
+    this.settingsRepository = settingsRepository;
     this.jwtService = jwtService;
     this.authenticationService = authenticationService;
     this.refreshTokenService =refreshTokenService;
@@ -78,15 +83,9 @@ public class UserController {
       return;
     }
 
-    System.out.println(access_token);
-    System.out.println(profile_picture);
-
     try {
-      String newPicture = userService.updateProfilePicture(profile_picture, access_token);
-      Cookie pictureCookie = new Cookie("profile_picture", newPicture);
-      pictureCookie.setPath("/");
-
-      response.addCookie(pictureCookie);
+      userService.updateProfilePicture(profile_picture, access_token);
+     
       response.setStatus(200);
       return;
 
@@ -99,21 +98,32 @@ public class UserController {
   @GetMapping(path="/info")
   public @ResponseBody UserInfoResponse getUserInfo(HttpServletResponse response,@CookieValue String access_token, @CookieValue String username) {
     UserInfoResponse userInfoResponse = new UserInfoResponse();
-
     try {
       User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
       if (!jwtService.isTokenValid(access_token, user)) {
         throw new RuntimeException("Token not valid");
       }
-      userInfoResponse.setName(user.getName());
-      userInfoResponse.setUsername(user.getUsername());
-      userInfoResponse.setEmail(user.getEmail());
+
+      UserInfo userInfo = new UserInfo();
+      userInfo.setName(user.getName());
+      userInfo.setUsername(user.getUsername());
+      userInfo.setEmail(user.getEmail());
+      userInfo.setProfilePicture(user.getProfilePicture());
+      SettingsInfo settingInfo = new SettingsInfo();
+      settingInfo.setPostVisibility(user.getSettings().getPostVisibility());
+      settingInfo.setNameVisibility(user.getSettings().getNameVisibility());
+      settingInfo.setProfileVisibility(user.getSettings().getProfileVisibility());
+      settingInfo.setColorTheme(user.getSettings().getColorTheme());
+      
+      userInfoResponse.setUserInfo(userInfo);
+      userInfoResponse.setSettingsInfo(settingInfo);
 
       response.setStatus(200);
       return userInfoResponse;
 
     } catch(Exception e) {
       response.setStatus(401);
+
       return userInfoResponse;
     }
 
@@ -140,6 +150,7 @@ public class UserController {
     } else {
       String expires = System.getenv("REFRESH_EXPIRES");
       int refreshExpires = Integer.parseInt(expires);
+      
       Cookie access_token = new Cookie("access_token", "");
       access_token.setPath("/");
       access_token.setMaxAge(0);
@@ -174,5 +185,43 @@ public class UserController {
       return;
     }
     
+  }
+  @PatchMapping(path="/update_settings")
+  public void updateSettings(HttpServletResponse response, @RequestBody UpdateSettingsDto updateSettingsDto, @CookieValue String username) {
+    
+    
+    try {
+      User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+      Settings settings = user.getSettings();
+      if (updateSettingsDto.getPostVisibility().equals("everyone") || updateSettingsDto.getPostVisibility().equals("followers")) {
+        
+        settings.setPostVisibility(updateSettingsDto.getPostVisibility());
+      }
+      if (updateSettingsDto.getNameVisibility().equals("everyone") || updateSettingsDto.getNameVisibility().equals("followers")) {
+        
+        settings.setNameVisibility(updateSettingsDto.getNameVisibility());
+      }
+      
+      if (updateSettingsDto.getColorTheme().equals("light") || updateSettingsDto.getColorTheme().equals("dark")) {
+        
+        settings.setColorTheme(updateSettingsDto.getColorTheme());
+      }
+
+      String expires = System.getenv("REFRESH_EXPIRES");
+      int refreshExpires = Integer.parseInt(expires);
+
+      Cookie theme = new Cookie("theme", settings.getColorTheme());
+      theme.setPath("/");
+      theme.setMaxAge(refreshExpires / 1000);
+
+      response.addCookie(theme);
+
+      settingsRepository.save(settings);
+      response.setStatus(200);
+      return;
+    } catch(Exception e) {
+      response.setStatus(400);
+      return;
+    }
   }
 }

@@ -108,7 +108,7 @@ public class AuthenticationController {
     // Checks if token is still valid
     @PostMapping("/checkAuth")
     public void checkAuth(HttpServletResponse response, @CookieValue String access_token) {
-        
+    
         if (authenticationService.checkToken(access_token)) {
             response.setStatus(HttpStatus.OK.value());
         } else {
@@ -120,45 +120,37 @@ public class AuthenticationController {
     
     // Refreshes access and refresh token if the refresh token is valid
     @PostMapping("/refresh")
-    public void refreshToken(HttpServletResponse response, @CookieValue String refresh_token, @CookieValue String deviceId){
-        // Thread.sleep(5000);
-        
+    public @ResponseBody String refreshToken(HttpServletResponse response, @CookieValue String refresh_token, @CookieValue String deviceId){
         try {
             // Verifies that refresh_token is valid
             RefreshToken refreshToken = refreshTokenService.findByTokenAndDeviceId(refresh_token, deviceId);
+            
             refreshTokenService.verifyExpiration(refreshToken);
-           
             // Creates a new refresh and access token
             User user = refreshToken.getUser();
             refreshToken = refreshTokenService.createRefreshToken(user, deviceId);
             String jwtToken = jwtService.generateToken(user);
-
-            // Returns new token values
-            // RefreshResponse refreshResponse = new RefreshResponse();
-            // refreshResponse.setRefreshToken(refreshToken.getToken());
-            // refreshResponse.setExpiresIn(jwtService.getExpirationTime());
-            // refreshResponse.setRefreshExpiryDate(refreshToken.getExpiryDate());
-            // refreshResponse.setToken(jwtToken);
-            // refreshResponse.setUsername(user.getUsername());
-            // refreshResponse.setProfilePicture(user.getProfilePicture());
-
+            
             authenticationService.setCredentials(response, jwtToken, refreshToken, deviceId);
             response.setStatus(200);
-            return;
-            // return ResponseEntity.ok(refreshResponse);
+            return refreshToken.getToken();
             
         } catch (RefreshTokenNotFoundException e) {
+            System.out.println(e.getMessage());
+            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+            return "Failed";
+            
         } catch (RefreshTokenExpiredException e) {
+            System.out.println(e.getMessage());
+            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+            return "Failed";
         } catch (RefreshTokenWrongDeviceException e) {
+            System.out.println(e.getMessage());
+            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
+            return "Failed";
+        } 
     }
 }

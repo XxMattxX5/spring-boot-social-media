@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Button, Grid } from "@mui/material";
-import styles from "../styles/profile.module.css";
+import styles from "../../styles/profile.module.css";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useCookies } from "react-cookie";
+import { useAuth } from "../../hooks/Auth";
 
 interface CloudinaryUploadWidgetInfo {
   resource_type: string;
   public_id: string;
   secure_url: string;
-  // Add other properties as needed
 }
 
 const ProfileImage = () => {
-  // const [imagePublicId, setImagePublicId] = useState("o5qnqwl91vwifrjlr7j0");
-  const [cookies, setCookie] = useCookies(["username", "profile_picture"]);
+  const { user, fetchUser, settings } = useAuth();
+  const theme = settings?.colorTheme || "light";
+  const profile_picture = user?.profilePicture || "";
+  const [cookies, setCookie] = useCookies(["username"]);
   const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || "";
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
-  const updatePicture = (imageId: string) => {
+  const updatePicture = (imageUrl: string) => {
     fetch(`${backendUrl}/user/profile_picture`, {
       method: "PATCH",
       credentials: "include",
@@ -27,11 +29,13 @@ const ProfileImage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        profile_picture: imageId,
+        profile_picture: imageUrl,
       }),
     })
       .then((res) => {
-        if (!res.ok) {
+        if (res.ok) {
+          fetchUser();
+        } else {
           throw new Error("Failed to update profile_picture");
         }
       })
@@ -40,13 +44,15 @@ const ProfileImage = () => {
 
   return (
     <Grid>
-      <CldImage
-        id={styles.profile_image}
-        src={cookies.profile_picture}
-        alt="Profile Picture"
-        width={125}
-        height={125}
-      />
+      {profile_picture ? (
+        <CldImage
+          id={styles.profile_image}
+          src={profile_picture}
+          alt="Profile Picture"
+          width={125}
+          height={125}
+        />
+      ) : null}
       <CldUploadWidget
         uploadPreset={uploadPreset}
         options={{
@@ -56,21 +62,22 @@ const ProfileImage = () => {
           maxImageWidth: 200,
           cropping: true,
           croppingShowDimensions: true,
-          // croppingValidateDimensions: true,
           croppingCoordinatesMode: "custom",
           croppingAspectRatio: 1,
-          // validateMaxWidthHeight: true,
           multiple: false,
         }}
         onSuccess={(result, { widget }) => {
           const info = result.info as CloudinaryUploadWidgetInfo;
-          updatePicture(info.public_id);
+          updatePicture(info.secure_url);
           widget.close();
         }}
       >
         {({ cloudinary, widget, open }) => {
           return (
-            <Button sx={{ color: "black" }} onClick={() => open()}>
+            <Button
+              sx={{ color: theme == "dark" ? "white" : "black" }}
+              onClick={() => open()}
+            >
               <FileUploadIcon className={styles.profile_nav_icons} />
               Upload Image
             </Button>

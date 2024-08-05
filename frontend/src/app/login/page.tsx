@@ -3,7 +3,7 @@ import { Grid } from "@mui/material";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-const LoginForm = dynamic(() => import("./LoginForm"), {
+const LoginForm = dynamic(() => import("./components/LoginForm"), {
   ssr: false,
 });
 
