@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "...",
 };
 
-const register = () => {
+const Register = () => {
   return (
     <Grid id={styles.register_form_container}>
       <RegisterForm />
@@ -21,4 +21,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

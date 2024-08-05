@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import styles from "../../styles/profile.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 
 interface User {
   name: string;

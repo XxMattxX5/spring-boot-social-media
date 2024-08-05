@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Grid, Button, Tooltip } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import CommentIcon from "@mui/icons-material/Comment";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   postId: number;
@@ -48,7 +48,7 @@ const PostBottomBar = ({ postId, likes, username }: Props) => {
       }
     };
     getIsLiked();
-  }, []);
+  }, [backendUrl, postId, refresh]);
 
   const likePost = async () => {
     let status = null;

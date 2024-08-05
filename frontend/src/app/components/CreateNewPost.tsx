@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Tiptap from "./Tiptap";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { stat } from "fs";
 

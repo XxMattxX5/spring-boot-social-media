@@ -18,7 +18,7 @@ import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { bulletList } from "@tiptap/pm/schema-list";

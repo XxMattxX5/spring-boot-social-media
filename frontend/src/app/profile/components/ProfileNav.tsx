@@ -6,7 +6,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import styles from "../../styles/profile.module.css";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 
 type Props = {
   currentNav: string;

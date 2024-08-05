@@ -5,7 +5,8 @@ import TimeAgo from "./TimeAgo";
 import Link from "next/link";
 import styles from "../styles/following.module.css";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
+import Image from "next/image";
 
 type follow = {
   userId: number;
@@ -100,11 +101,12 @@ const Follow = ({ type }: Props) => {
                 className={styles.following_follow}
               >
                 <Grid item className={styles.following_follow_info}>
-                  <img
+                  <Image
                     src={follow.profilePicture}
                     width={40}
                     height={40}
                     className={styles.following_follow_image}
+                    alt={"Profile Picture"}
                   />
                   <Grid item>
                     <Typography

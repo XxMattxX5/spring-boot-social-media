@@ -51,29 +51,6 @@ export const AuthProvider = ({ children }: Props) => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      settings &&
-      settings.colorTheme == "dark"
-    ) {
-      document.body.classList.add("dark-body");
-    } else if (
-      typeof window !== "undefined" &&
-      settings &&
-      settings.colorTheme == "light" &&
-      document.body.classList.contains("dark-body")
-    ) {
-      document.body.classList.remove("dark-body");
-    }
-
-    if (cookies.isLogged == true && user == null) {
-      fetchUser();
-    } else if (cookies.isLogged != true && user != null) {
-      logout();
-    }
-  }, [user, cookies.isLogged]);
-
   const fetchUser = async () => {
     let status = false;
     const headers = {
@@ -190,6 +167,31 @@ export const AuthProvider = ({ children }: Props) => {
         }
       });
   };
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      settings &&
+      settings.colorTheme == "dark" &&
+      !document.body.classList.contains("dark-body")
+    ) {
+      document.body.classList.add("dark-body");
+    } else if (
+      typeof window !== "undefined" &&
+      settings &&
+      settings.colorTheme == "light" &&
+      document.body.classList.contains("dark-body")
+    ) {
+      document.body.classList.remove("dark-body");
+    }
+
+    if (cookies.isLogged == true && user == null) {
+      fetchUser();
+    } else if (cookies.isLogged != true && user != null) {
+      logout();
+    }
+  });
+  //Removed Dependecies
 
   return (
     <AuthContext.Provider

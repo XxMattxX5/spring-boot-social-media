@@ -37,6 +37,7 @@
     "react-dom": "^18.3.1",
     "react-loading": "^2.0.3",
     "react-timeago": "^7.2.0",
+    "sharp": "^0.33.4",
     "styled-components": "^6.1.11",
     "uuid": "^10.0.0"
   },

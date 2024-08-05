@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Grid,
   Typography,
@@ -9,7 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import styles from "../../styles/profile.module.css";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 
 const Settings = () => {
   const backendUrl =
@@ -26,16 +26,6 @@ const Settings = () => {
   const [profileVisibility, setProfileVisibility] = useState(
     settings?.profileVisibility
   );
-
-  useEffect(() => {
-    if (
-      postVisibility != settings?.postVisibility ||
-      nameVisibility != settings?.nameVisibility ||
-      colorTheme != settings?.colorTheme
-    ) {
-      updateSettings();
-    }
-  }, [postVisibility, nameVisibility, colorTheme]);
 
   const handlePostVisibilityChange = (e: SelectChangeEvent) => {
     setPostVisibility(e.target.value);
@@ -61,7 +51,7 @@ const Settings = () => {
     }
   };
 
-  const updateSettings = async () => {
+  const updateSettings = useCallback(async () => {
     let status = false;
     const headers = {
       "Content-Type": "application/json",
@@ -94,7 +84,32 @@ const Settings = () => {
         updateSettings();
       }
     }
-  };
+  }, [
+    backendUrl,
+    colorTheme,
+    fetchUser,
+    nameVisibility,
+    postVisibility,
+    refresh,
+  ]);
+
+  useEffect(() => {
+    if (
+      postVisibility != settings?.postVisibility ||
+      nameVisibility != settings?.nameVisibility ||
+      colorTheme != settings?.colorTheme
+    ) {
+      updateSettings();
+    }
+  }, [
+    postVisibility,
+    nameVisibility,
+    colorTheme,
+    settings?.postVisibility,
+    settings?.nameVisibility,
+    settings?.colorTheme,
+    updateSettings,
+  ]);
 
   return (
     <Grid container height={"100%"}>

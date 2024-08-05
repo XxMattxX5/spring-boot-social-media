@@ -18,7 +18,7 @@ import { CldImage } from "next-cloudinary";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 
 const NavBar = () => {
   const { user, logout, settings } = useAuth();

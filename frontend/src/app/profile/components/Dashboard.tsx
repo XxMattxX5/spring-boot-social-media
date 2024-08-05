@@ -10,13 +10,14 @@ import {
 import styles from "../../styles/profile.module.css";
 import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
 import SelectedPost from "../../components/SelectedPost";
 import SafeHtml from "@/app/components/SafeHtml";
 import ReactLoading from "react-loading";
 import SelectPostButton from "@/app/components/SelectPostButton";
+import Image from "next/image";
 
 type follow = {
   userId: number;

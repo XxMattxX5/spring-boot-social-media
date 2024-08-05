@@ -4,7 +4,7 @@ import styles from "../../styles/profile.module.css";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useCookies } from "react-cookie";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 
 interface CloudinaryUploadWidgetInfo {
   resource_type: string;

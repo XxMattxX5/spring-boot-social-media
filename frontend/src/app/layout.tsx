@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 // import "@mui/material/styles";
 import "./globals.css";
 import dynamic from "next/dynamic";
-import { AuthProvider } from "./hooks/Auth";
+import { AuthProvider } from "./hooks/useAuth";
 import { StyledEngineProvider } from "@mui/material/styles";
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";

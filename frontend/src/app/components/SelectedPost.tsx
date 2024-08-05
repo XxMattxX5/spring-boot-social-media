@@ -1,10 +1,11 @@
 import React, { Suspense, lazy } from "react";
 import { Grid, IconButton, Typography } from "@mui/material";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactLoading from "react-loading";
 import TimeAgo from "../components/TimeAgo";
 import PostBottomBar from "./PostBottomBar";
+import Image from "next/image";
 
 const SafeHtml = lazy(() => import("../components/SafeHtml"));
 
@@ -37,7 +38,7 @@ const SelectedPost = ({ post, clearPostCallBack }: Props) => {
         sx={{ backgroundColor: theme == "dark" ? "#333333" : "white" }}
       >
         <Grid id="selected_post_header">
-          <img
+          <Image
             src={post.profilePicture}
             height={50}
             width={50}

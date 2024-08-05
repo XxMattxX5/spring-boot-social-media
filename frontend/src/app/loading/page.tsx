@@ -1,19 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Grid, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-// import { refreshToken } from "../lib/Auth";
-import { useAuth } from "../hooks/Auth";
+import { useSearchParams, usePathname } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
 import { useCookies } from "react-cookie";
-import { stat } from "fs";
 
-const page = () => {
+const Loading = () => {
   const { refresh } = useAuth();
   const [cookies, setCookies] = useCookies(["access_token", "refresh_token"]);
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const router = useRouter();
-  const redirect = searchParams.get("redirect") || "/";
+  // const redirect = searchParams.get("redirect") || "/";
   const [refreshed, setRefreshed] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -21,10 +21,10 @@ const page = () => {
       if (refreshed == true) {
         router.refresh();
       } else {
-        router.replace(`/login?redirect=${redirect}`);
+        router.replace(`/login?redirect=${pathname}`);
       }
     }
-  }, [refreshed]);
+  }, [refreshed, router, pathname]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -34,49 +34,12 @@ const page = () => {
           setRefreshed(res);
         }
       });
-      //   const backendUrl =
-      //     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-      //   let status: null | boolean = null;
-      //   await fetch(`${backendUrl}/auth/refresh`, {
-      //     headers: {
-      //       Accept: "application/json",
-      //     },
-      //     method: "POST",
-      //     credentials: "include",
-      //     signal: controller.signal,
-      //   })
-      //     .then((res) => {
-      //       if (res.ok) {
-      //         status = true;
-      //       } else {
-      //         sessionStorage.setItem("status", String(res.status));
-      //         throw new Error("Token not valid");
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       if (String(error.name) !== "AbortError") {
-      //         status = null;
-      //         console.log("Error refreshing tokens: " + JSON.stringify(error));
-      //         // logout();
-      //         status = false;
-      //       } else {
-      //       }
-      //     });
-      //   sessionStorage.setItem(
-      //     "fetch",
-      //     sessionStorage.getItem("fetch") + String(status)
-      //   );
-      //   if (status != null) {
-      //     setRefreshed(status);
-      //   }
-      // sessionStorage.setItem("first", cookies.refresh_token);
-      // setRefreshed(await refresh());
     };
     refreshToken();
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [refresh]);
 
   return (
     <Grid container id="loading_container">
@@ -85,4 +48,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Loading;

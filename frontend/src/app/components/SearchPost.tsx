@@ -13,7 +13,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../styles/searchpost.module.css";
-import { useAuth } from "../hooks/Auth";
+import { useAuth } from "../hooks/useAuth";
 import { useRouter, usePathname } from "next/navigation";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -64,20 +64,6 @@ const SearchPost = ({ children }: Props) => {
     url += `&type=${currentType}`;
     url += `&sort=${sortOp}`;
 
-    // if (s != searchParams.get("search") && s != "") {
-    //   filters += 1;
-    //   url += `search=${s}`;
-    // }
-    // if (currentType != searchParams.get("type")) {
-    //   filters > 0 ? (url += "&") : null;
-    //   filters += 1;
-    //   url += `type=${currentType}`;
-    // }
-    // if (sortOp != searchParams.get("sort")) {
-    //   filters > 0 ? (url += "&") : null;
-    //   filters += 1;
-    //   url += `sort=${sortOp}`;
-    // }
     router.push(url);
   };
 
@@ -177,6 +163,7 @@ const SearchPost = ({ children }: Props) => {
           <Button
             onClick={() => handlePageChange(num)}
             sx={{ backgroundColor: currentPage == num ? "#484747" : "unset" }}
+            key={num}
           >
             {num}
           </Button>

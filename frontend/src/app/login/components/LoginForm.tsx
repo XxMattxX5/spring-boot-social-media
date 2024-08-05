@@ -17,7 +17,7 @@ import login_picture from "../../../../public/images/login_picture.jpg";
 import { v4 as uuidv4 } from "uuid";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/useAuth";
 
 const LoginForm = () => {
   const { login } = useAuth();
