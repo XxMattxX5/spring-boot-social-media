@@ -19,11 +19,19 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT p FROM Post p Where " 
     + "(:search IS NULL OR LOWER(p.content) LIKE LOWER(CONCAT('%', :search, '%'))) ")
-    List<PostProjection> searchFollowedPostContent(@Param("search") String search, Pageable sort);
+    List<PostProjection> searchFollowedPostContent(@Param("search") String search, Pageable pageable);
 
     @Query("SELECT p FROM Post p Where " 
     + "(:search IS NULL OR LOWER(p.author.username) LIKE LOWER(CONCAT('%', :search, '%'))) ")
-    List<PostProjection> searchFollowedPostUser(@Param("search") String search, Pageable sort);
+    List<PostProjection> searchFollowedPostUser(@Param("search") String search, Pageable pageable);
+
+    @Query("SELECT p FROM Post p Where " 
+    + "(:search IS NULL OR LOWER(p.content) LIKE LOWER(CONCAT('%', :search, '%'))) ")
+    List<PostProjection> searchAllPostContent(@Param("search") String search, Pageable pageable);
+
+    @Query("SELECT p FROM Post p Where " 
+    + "(:search IS NULL OR LOWER(p.author.username) LIKE LOWER(CONCAT('%', :search, '%'))) ")
+    List<PostProjection> searchAllPostUsers(@Param("search") String search, Pageable pageable);
     
     List<PostProjection> findByAuthorOrderByCreatedAtAsc(User author);
     List<PostProjection> findByAuthorOrderByCreatedAtDesc(User author);

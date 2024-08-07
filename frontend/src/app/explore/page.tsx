@@ -40,13 +40,18 @@ type Post = {
   createdAt: string;
 };
 
-async function getPosts(search?: string, type?: string, sort?: string) {
+async function getPosts(
+  page?: string,
+  search?: string,
+  type?: string,
+  sort?: string
+) {
   const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
   const cookieStore = cookies();
   const access_token = cookieStore.get("access_token")?.value;
 
   const response = await fetch(
-    `${backendUrl}/post/followed?search=${search}&type=${type}&sort=${sort}`,
+    `${backendUrl}/post/all?page=${page}&search=${search}&type=${type}&sort=${sort}`,
     {
       method: "GET",
       cache: "no-cache",
@@ -64,28 +69,23 @@ async function getPosts(search?: string, type?: string, sort?: string) {
   }
 }
 
-export default async function Feed({
+export default async function Explore({
   params,
   searchParams,
 }: {
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) {
+  const page = searchParams?.page;
   const search = searchParams?.search;
   const type = searchParams?.type;
   const sort = searchParams?.sort;
-  const posts: Post[] = await getPosts(search, type, sort);
+  const posts: Post[] = await getPosts(page, search, type, sort);
   const cookieStore = cookies();
   const theme = cookieStore.get("theme")?.value || "light";
 
   return (
     <Grid container id="feed_container">
-      <Grid item xs={12}>
-        <Grid item xs={6} id="feed_search_container">
-          <CreateNewPostButton />
-        </Grid>
-      </Grid>
-
       <Grid item xs={3}>
         f
       </Grid>

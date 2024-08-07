@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/createpost.module.css";
 import {
   Grid,
@@ -13,7 +13,7 @@ import Tiptap from "./Tiptap";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { stat } from "fs";
+import { useScrollBlock } from "../hooks/useScrollBlock";
 
 type Props = {
   displayMenuClose: () => void;
@@ -21,12 +21,20 @@ type Props = {
 
 const CreateNewPost = ({ displayMenuClose }: Props) => {
   const router = useRouter();
+  const [blockScroll, allowScroll] = useScrollBlock();
   const { settings, refresh } = useAuth();
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const theme = settings?.colorTheme || "light";
   const [content, setContent] = useState<string>("");
   const [postError, setPostError] = useState("");
+
+  useEffect(() => {
+    blockScroll();
+    return () => {
+      allowScroll();
+    };
+  }, [blockScroll, allowScroll]);
 
   const createPost = async () => {
     if (!content) {

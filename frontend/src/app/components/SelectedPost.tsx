@@ -1,13 +1,17 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Grid, IconButton, Typography } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactLoading from "react-loading";
 import TimeAgo from "../components/TimeAgo";
 import PostBottomBar from "./PostBottomBar";
-import Image from "next/image";
+import { useScrollBlock } from "../hooks/useScrollBlock";
 
-const SafeHtml = lazy(() => import("../components/SafeHtml"));
+const SafeHtmlClient = lazy(() =>
+  import("../components/SafeHtml").then((module) => ({
+    default: module.SafeHtmlClient,
+  }))
+);
 
 type Post = {
   profilePicture: string;
@@ -25,7 +29,16 @@ type Props = {
 
 const SelectedPost = ({ post, clearPostCallBack }: Props) => {
   const { settings } = useAuth();
+  const [blockScroll, allowScroll] = useScrollBlock();
   const theme = settings?.colorTheme || "light";
+
+  useEffect(() => {
+    blockScroll();
+    return () => {
+      allowScroll();
+    };
+  }, [blockScroll, allowScroll]);
+
   return (
     <Grid container id="selected_post_container">
       <Grid sx={{ width: "100%", textAlign: "right" }}>
@@ -38,7 +51,7 @@ const SelectedPost = ({ post, clearPostCallBack }: Props) => {
         sx={{ backgroundColor: theme == "dark" ? "#333333" : "white" }}
       >
         <Grid id="selected_post_header">
-          <Image
+          <img
             src={post.profilePicture}
             height={50}
             width={50}
@@ -68,7 +81,7 @@ const SelectedPost = ({ post, clearPostCallBack }: Props) => {
               </Grid>
             }
           >
-            <SafeHtml html={post.content} />
+            <SafeHtmlClient html={post.content} />
           </Suspense>
         </Grid>
         <PostBottomBar

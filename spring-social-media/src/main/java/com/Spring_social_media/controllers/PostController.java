@@ -68,6 +68,13 @@ public class PostController {
         }
 
     }
+   
+
+    @GetMapping(path="/all")
+    public @ResponseBody List<PostProjection> getAllPost(HttpServletResponse response, @RequestParam(required = false) String page, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {
+    
+        return postService.getAllPost(page,search, type, sort);
+    }
 
     @GetMapping(path="/followed")
     public @ResponseBody List<PostProjection> getFollowedPost(HttpServletResponse response, @CookieValue String access_token, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {

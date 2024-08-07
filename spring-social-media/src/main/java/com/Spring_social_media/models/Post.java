@@ -9,13 +9,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import com.Spring_social_media.repositories.LikeRepository;
+
 
 
 @Table(name = "posts")

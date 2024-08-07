@@ -21,7 +21,6 @@ import Image from "@tiptap/extension-image";
 import { useAuth } from "../hooks/useAuth";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { CldImage, CldUploadWidget } from "next-cloudinary";
-import { bulletList } from "@tiptap/pm/schema-list";
 
 interface CloudinaryUploadWidgetInfo {
   resource_type: string;
@@ -125,21 +124,10 @@ const Tiptap = ({ contentCallBack }: Props) => {
     });
   }
 
-  // useEffect(() => {
-  //   editor.commands.insertContent({
-  //     type: "image",
-  //     attrs: {
-  //       src: "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722710273/okvfzizts0h47nbaultj.jpg",
-  //       alt: "Uploaded Image",
-  //     },
-  //   });
-  // }, []);
-
   return (
     <Grid
       style={{
         width: "100%",
-        // overflow: "hidden",
         boxShadow: "0 0 3px #000",
       }}
     >
@@ -152,12 +140,21 @@ const Tiptap = ({ contentCallBack }: Props) => {
           sx={{ height: 30, color: "inherit" }}
           inputProps={{ "aria-label": "Font Size" }}
         >
-          <MenuItem value="12px">12px</MenuItem>
-          <MenuItem value="14px">14px</MenuItem>
-          <MenuItem value="16px">16px</MenuItem>
-          <MenuItem value="18px">18px</MenuItem>
-          <MenuItem value="20px">20px</MenuItem>
-          <MenuItem value="24px">24px</MenuItem>
+          <MenuItem value="8px">8</MenuItem>
+          <MenuItem value="9px">9</MenuItem>
+          <MenuItem value="10px">10</MenuItem>
+          <MenuItem value="11px">11</MenuItem>
+          <MenuItem value="12px">12</MenuItem>
+          <MenuItem value="14px">14</MenuItem>
+          <MenuItem value="16px">16</MenuItem>
+          <MenuItem value="18px">18</MenuItem>
+          <MenuItem value="20px">20</MenuItem>
+          <MenuItem value="22px">22</MenuItem>
+          <MenuItem value="24px">24</MenuItem>
+          <MenuItem value="26px">26</MenuItem>
+          <MenuItem value="28px">28</MenuItem>
+          <MenuItem value="36px">36</MenuItem>
+          <MenuItem value="42px">42</MenuItem>
         </Select>
         <Select
           value={currentFontFamily}

@@ -5,7 +5,7 @@ type SafeHtmlProps = {
   html: string;
 };
 
-const SafeHtml = async ({ html }: SafeHtmlProps) => {
+export const SafeHtmlServer = async ({ html }: SafeHtmlProps) => {
   let sanitizedHtml;
 
   if (typeof window === "undefined") {
@@ -20,4 +20,10 @@ const SafeHtml = async ({ html }: SafeHtmlProps) => {
   return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
 };
 
-export default SafeHtml;
+export const SafeHtmlClient = ({ html }: SafeHtmlProps) => {
+  let sanitizedHtml;
+
+  sanitizedHtml = DOMPurify.sanitize(html);
+
+  return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
+};

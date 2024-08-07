@@ -13,11 +13,9 @@ import MessageIcon from "@mui/icons-material/Message";
 import { useAuth } from "../../hooks/useAuth";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
-import SelectedPost from "../../components/SelectedPost";
-import SafeHtml from "@/app/components/SafeHtml";
+import { SafeHtmlClient } from "../../components/SafeHtml";
 import ReactLoading from "react-loading";
-import SelectPostButton from "@/app/components/SelectPostButton";
-import Image from "next/image";
+import SelectPostButton from "../../components/SelectPostButton";
 
 type follow = {
   userId: number;
@@ -37,7 +35,6 @@ type Post = {
 const Dashboard = () => {
   const { settings } = useAuth();
   const theme = settings?.colorTheme || "light";
-  const [displayedPost, setDisplayedPost] = useState<Post | null>();
   const [followers, setFollowers] = useState<follow[]>([
     // {
     //   userId: 1,
@@ -144,18 +141,8 @@ const Dashboard = () => {
     setSearchFollowing(e.target.value);
   };
 
-  const clearDisplayedPost = () => {
-    setDisplayedPost(null);
-  };
-
   return (
     <>
-      {displayedPost ? (
-        <SelectedPost
-          post={displayedPost}
-          clearPostCallBack={clearDisplayedPost}
-        />
-      ) : null}
       <Grid container>
         <Typography variant="h2" className={styles.profile_menu_header}>
           Dashboard
@@ -403,7 +390,7 @@ const Dashboard = () => {
                               </Grid>
                             }
                           >
-                            <SafeHtml html={post.content} />
+                            <SafeHtmlClient html={post.content} />
                           </Suspense>
                         </Grid>
                       </Grid>

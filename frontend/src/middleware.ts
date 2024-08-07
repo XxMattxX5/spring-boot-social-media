@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { checkAuth } from "./app/lib/ServerAuth";
 
 export async function middleware(request: NextRequest) {
-  const protectedRoutes: Array<string> = ["/profile", "/", "/feed"];
+  const protectedRoutes: Array<string> = ["/profile", "/", "/feed", "/explore"];
   const access_token = request.cookies.get("access_token")?.value;
   const refresh_token = request.cookies.get("refresh_token")?.value;
   const username = request.cookies.get("username")?.value;

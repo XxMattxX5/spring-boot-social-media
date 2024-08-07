@@ -42,7 +42,7 @@ public class PostService {
         return;
     }
 
-    public List<PostProjection> getFollowedPostList(User user, String search, String type, String sort) {
+    public List<PostProjection> getFollowedPostList(User user, String search, String searchType, String sort) {
         
         
         String searchInput = search.equals("undefined") || search.equals("") ? "": search;
@@ -64,7 +64,7 @@ public class PostService {
         // Create Pageable object with sort
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(direction, sortField));
 
-        if (type.equals("user")) {
+        if (searchType.equals("user")) {
             return postRepository.searchFollowedPostUser(searchInput, pageable);
         } else { 
             return postRepository.searchFollowedPostContent(searchInput, pageable);
@@ -72,6 +72,45 @@ public class PostService {
         
         
     }
+    public List<PostProjection> getAllPost(String page, String search, String searchType, String sort) {
+       
+        String searchInput = search.equals("undefined") || search.equals("") ? "": search;
+        Integer pageNum;
+        try {
+            Integer num = Integer.parseInt(page);
+            pageNum = num;
+        } catch(Exception e) {
+            pageNum = 1;
+        }
+
+        Sort.Direction direction = Sort.Direction.DESC;
+
+        
+        // Validate and set sort field
+        String sortField = "createdAt";
+        
+        if ("createdAtAsc".equalsIgnoreCase(sort)) {
+            direction = Sort.Direction.ASC;
+            sortField = "createdAt";
+        } else if ("createdAtDesc".equalsIgnoreCase(sort)) {
+            sortField = "createdAt";
+        } else if ("username".equalsIgnoreCase(sort)) {
+            sortField = "author.username";
+        }
+       
+        System.out.println(pageNum);
+
+        // Create Pageable object with sort
+        Pageable pageable = PageRequest.of(pageNum - 1, 3, Sort.by(direction, sortField));
+
+        if (searchType.equals("user")) {
+            return postRepository.searchAllPostContent(searchInput, pageable);
+        } else { 
+            return postRepository.searchAllPostUsers(searchInput, pageable);
+        }
+        
+    }
+
 
     public void addLike(Post post) {
         post.setLikeCount(post.getLikeCount() + 1);
