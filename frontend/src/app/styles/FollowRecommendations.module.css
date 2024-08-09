@@ -1,0 +1,21 @@
+#followrec_container {
+  min-height: 80vh;
+
+  overflow: hidden;
+  padding: 5px;
+  padding-right: 10px;
+}
+#followrec_box {
+  box-shadow: black 0px 0px 3px;
+  width: 95%;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+}
+#followrec_header {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background-color: #00abf7;
+  height: fit-content;
+}

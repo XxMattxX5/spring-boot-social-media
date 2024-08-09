@@ -34,7 +34,7 @@ const NavBar = () => {
   const pages = [
     { name: "Home", link: "/" },
     { name: "Feed", link: "/feed" },
-    { name: "Trending", link: "/trending" },
+    { name: "Popular", link: "/popular" },
     { name: "Explore", link: "/explore" },
   ];
 

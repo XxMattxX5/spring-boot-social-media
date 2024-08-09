@@ -11,6 +11,7 @@
 #login_box {
   align-content: center;
   padding: 30px;
+  background-color: white;
 }
 
 .login_field_boxes {

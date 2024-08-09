@@ -6,6 +6,7 @@ import com.Spring_social_media.repositories.PostRepository;
 import com.Spring_social_media.repositories.UserRepository;
 import com.Spring_social_media.util.HtmlSanitizer;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -42,10 +43,17 @@ public class PostService {
         return;
     }
 
-    public List<PostProjection> getFollowedPostList(User user, String search, String searchType, String sort) {
-        
-        
+    public Page<PostProjection> getFollowedPostList(User user,String page, String search, String searchType, String sort) {
+    
         String searchInput = search.equals("undefined") || search.equals("") ? "": search;
+
+        Integer pageNum;
+        try {
+            Integer num = Integer.parseInt(page);
+            pageNum = num;
+        } catch(Exception e) {
+            pageNum = 1;
+        }
 
         Sort.Direction direction = Sort.Direction.DESC;
 
@@ -62,7 +70,7 @@ public class PostService {
         }
        
         // Create Pageable object with sort
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(direction, sortField));
+        Pageable pageable = PageRequest.of(pageNum-1, 3, Sort.by(direction, sortField));
 
         if (searchType.equals("user")) {
             return postRepository.searchFollowedPostUser(searchInput, pageable);
@@ -72,7 +80,7 @@ public class PostService {
         
         
     }
-    public List<PostProjection> getAllPost(String page, String search, String searchType, String sort) {
+    public Page<PostProjection> getAllPost(String page, String search, String searchType, String sort) {
        
         String searchInput = search.equals("undefined") || search.equals("") ? "": search;
         Integer pageNum;
@@ -98,17 +106,35 @@ public class PostService {
             sortField = "author.username";
         }
        
-        System.out.println(pageNum);
-
+        
         // Create Pageable object with sort
-        Pageable pageable = PageRequest.of(pageNum - 1, 3, Sort.by(direction, sortField));
+        Pageable pageable = PageRequest.of(pageNum - 1, 1, Sort.by(direction, sortField));
 
         if (searchType.equals("user")) {
-            return postRepository.searchAllPostContent(searchInput, pageable);
-        } else { 
             return postRepository.searchAllPostUsers(searchInput, pageable);
+        } else { 
+            return postRepository.searchAllPostContent(searchInput, pageable);
         }
         
+    }
+
+    public Page<PostProjection> getPopular(String page) {
+
+        Integer pageNum;
+        try {
+            Integer num = Integer.parseInt(page);
+            pageNum = num;
+        } catch(Exception e) {
+            pageNum = 1;
+        }
+        
+        Sort.Direction direction = Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(pageNum - 1, 20, Sort.by(direction, "likeCount"));
+
+        Page<PostProjection> list = postRepository.findAllProjectedBy(pageable);
+        return list;
+ 
     }
 
 

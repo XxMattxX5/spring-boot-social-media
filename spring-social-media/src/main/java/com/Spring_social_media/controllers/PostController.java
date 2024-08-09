@@ -18,12 +18,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.Spring_social_media.models.User;
 import com.Spring_social_media.models.Post;
 import com.Spring_social_media.repositories.UserRepository;
+import com.Spring_social_media.responses.PostListResponse;
 import com.Spring_social_media.services.JwtService;
 import com.Spring_social_media.services.PostService;
 import com.Spring_social_media.dtos.CreatePostDto;
 import com.Spring_social_media.projections.PostProjection;
 
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 
 @RequestMapping("/post")
@@ -71,13 +72,29 @@ public class PostController {
    
 
     @GetMapping(path="/all")
-    public @ResponseBody List<PostProjection> getAllPost(HttpServletResponse response, @RequestParam(required = false) String page, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {
+    public @ResponseBody ResponseEntity<PostListResponse> getAllPost(HttpServletResponse response, @RequestParam(required = false) String page, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {
     
-        return postService.getAllPost(page,search, type, sort);
+        Page<PostProjection> posts = postService.getAllPost(page,search, type, sort);
+
+        PostListResponse postList = new PostListResponse();
+        postList.setPostList(posts.getContent());
+        postList.setPageCount(posts.getTotalPages());
+        return ResponseEntity.ok(postList);
     }
 
+    @GetMapping(path="/popular")
+    public ResponseEntity<PostListResponse> getTrending(HttpServletResponse response, @RequestParam(required = false, defaultValue = "1") String page  ) {
+        
+        Page<PostProjection> postList = postService.getPopular(page);
+        PostListResponse postResponse = new PostListResponse();
+        postResponse.setPostList(postList.getContent());
+        postResponse.setPageCount(postList.getTotalPages());
+        return ResponseEntity.ok(postResponse);
+    }
+    
+
     @GetMapping(path="/followed")
-    public @ResponseBody List<PostProjection> getFollowedPost(HttpServletResponse response, @CookieValue String access_token, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {
+    public @ResponseBody ResponseEntity<PostListResponse> getFollowedPost(HttpServletResponse response, @CookieValue String access_token, @RequestParam(required = false) String page, @RequestParam(required = false) String search, @RequestParam(required = false) String type, @RequestParam(required = false) String sort) {
         User user;
         
         try {
@@ -87,7 +104,12 @@ public class PostController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, null, e);
         }
 
-        return postService.getFollowedPostList(user, search, type, sort);
+        Page<PostProjection> posts = postService.getFollowedPostList(user, page, search, type, sort);
+
+        PostListResponse postList = new PostListResponse();
+        postList.setPostList(posts.getContent());
+        postList.setPageCount(posts.getTotalPages());
+        return ResponseEntity.ok(postList);
     }
     
     

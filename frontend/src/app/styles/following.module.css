@@ -1,6 +1,7 @@
 #following_container {
-  padding: 20px;
+  /* padding: 20px; */
   padding-top: 0px;
+  margin-bottom: 20px;
 }
 #following_box {
   box-shadow: black 0px 0px 3px;

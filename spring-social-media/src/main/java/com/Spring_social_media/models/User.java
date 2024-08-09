@@ -44,7 +44,7 @@ public class User implements UserDetails{
     private String password;
 
     @Column(nullable = false)
-    private String profilePicture = "blank-profile-picture_vfkf6q";
+    private String profilePicture = "https://res.cloudinary.com/drk8ctpvl/image/upload/v1721747843/blank-profile-picture_vfkf6q.png";
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
