@@ -1,23 +1,15 @@
 package com.Spring_social_media.classes;
 
 public class SettingsInfo {
-    private String post_visibility;;
-    private String name_visibility;
+    private String allow_follows;
     private String profile_visibility;
     private String color_theme;
 
-    public void setPostVisibility(String postVisibility) {
-        this.post_visibility = postVisibility;
+    public void setAllowFollows(String allow_follows) {
+        this.allow_follows = allow_follows;
     }
-    public String getPostVisibility() {
-        return post_visibility;
-    }
-
-    public void setNameVisibility(String nameVisibility) {
-        this.name_visibility = nameVisibility;
-    }
-    public String getNameVisibility() {
-        return name_visibility;
+    public String getAllowFollows() {
+        return allow_follows;
     }
 
     public void setProfileVisibility(String profileVisibility) {

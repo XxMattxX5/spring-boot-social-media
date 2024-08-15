@@ -179,7 +179,7 @@ const SearchPost = ({ children, pageCount, showSearchBar }: Props) => {
         </Grid>
       ) : null}
       {children}
-      {pageCount > 0 ? (
+      {pageCount > 1 ? (
         <Grid id={styles.searchPost_page_buttons}>
           <IconButton onClick={() => handlePageChange(currentPage - 1)}>
             <KeyboardArrowLeftIcon />

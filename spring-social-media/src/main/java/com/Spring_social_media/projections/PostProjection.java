@@ -11,9 +11,13 @@ public interface PostProjection {
 
     Date getCreatedAt();
     
+    @Value("#{target.author.id}")
+    Integer getUserId();
+
     @Value("#{target.author.username}")
     String getUsername();
 
     @Value("#{target.author.profilePicture}")
     String getProfilePicture();
+
 }

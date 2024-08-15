@@ -32,19 +32,6 @@ const ProfileMenu = () => {
     setShowSideBar(false);
   }, [displayedMenu]);
 
-  // useEffect(() => {
-  //   let timeout: NodeJS.Timeout;
-  //   const handleBackground = () => {
-  //     setWindowWidth(window.innerWidth);
-  //   };
-  //   window.addEventListener("resize", handleBackground
-  //    );
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleBackground);
-  //   };
-  // }, [window.innerWidth]);
-
   return (
     <Grid container id={styles.profile_menu_container}>
       <Grid

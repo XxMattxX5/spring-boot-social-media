@@ -19,6 +19,7 @@ type Post = {
   id: number;
   content: string;
   createdAt: string;
+  userId: number;
 };
 type PostResponse = {
   postList: Post[];

@@ -19,11 +19,8 @@ public class Settings {
     @Column(nullable = false)
     private Integer id;
 
-    @Column(nullable = false)
-    private String post_visibility = "everyone";
-
-    @Column(nullable = false)
-    private String name_visibility = "everyone";
+    @Column()
+    private String allow_follows = "yes";
 
     @Column(nullable = false)
     private String profile_visibility = "followers";
@@ -34,21 +31,12 @@ public class Settings {
     @OneToOne
     @JoinColumn(nullable =  false, name = "user_id", referencedColumnName = "id")
     private User user;
-   
-    
 
-    public void setPostVisibility(String postVisibility) {
-        this.post_visibility = postVisibility;
+    public void setAllowFollows(String allow_follows) {
+        this.allow_follows = allow_follows;
     }
-    public String getPostVisibility() {
-        return post_visibility;
-    }
-
-    public void setNameVisibility(String nameVisibility) {
-        this.name_visibility = nameVisibility;
-    }
-    public String getNameVisibility() {
-        return name_visibility;
+    public String getAllowFollows() {
+        return allow_follows;
     }
 
     public void setProfileVisibility(String profile_visibility) {

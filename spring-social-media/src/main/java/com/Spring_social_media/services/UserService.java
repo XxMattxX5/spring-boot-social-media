@@ -57,4 +57,12 @@ public class UserService {
         return updateInfoResponse;
     }
 
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not Found"));
+    }
+
+    public User findUserById(Integer id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not Found"));
+    }
+
 }

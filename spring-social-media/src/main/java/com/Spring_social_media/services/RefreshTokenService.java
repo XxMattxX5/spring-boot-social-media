@@ -30,15 +30,31 @@ public class RefreshTokenService {
         int refreshExpires = Integer.parseInt(expires);
         try {
             RefreshToken refreshToken = findByUserAndDeviceId(user, deviceId);
-            refreshToken.setToken(UUID.randomUUID().toString());
+            String newToken = UUID.randomUUID().toString();
+            while (true) {
+                if (!refreshTokenRepository.findByTokenAndDeviceId(newToken, deviceId).isPresent()) {
+                    break;
+                } else {
+                    newToken = UUID.randomUUID().toString();
+                }
+            }
+            refreshToken.setToken(newToken);
             refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpires));
             
             return refreshTokenRepository.save(refreshToken);
 
         } catch(Exception e) {
             RefreshToken refreshToken = new RefreshToken();
+            String newToken = UUID.randomUUID().toString();
+            while (true) {
+                if (!refreshTokenRepository.findByTokenAndDeviceId(newToken, deviceId).isPresent()) {
+                    break;
+                } else {
+                    newToken = UUID.randomUUID().toString();
+                }
+            }
             refreshToken.setUser(userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new RuntimeException("User not found")));
-            refreshToken.setToken(UUID.randomUUID().toString());
+            refreshToken.setToken(newToken);
             refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpires));
             refreshToken.setDeviceId(deviceId);
             

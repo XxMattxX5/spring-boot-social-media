@@ -59,7 +59,8 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
           status = true;
           router.refresh();
           displayMenuClose();
-        } else if (res.status === 401 || res.status === 403) {
+          // } else if (res.status === 401 || res.status === 403) {
+        } else if (res.status === 401) {
           status = false;
         } else {
         }
@@ -98,7 +99,12 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
         <Typography id={styles.create_new_post_header} variant="h3">
           Create New Post
         </Typography>
-        <Tiptap contentCallBack={handleContentChange} />
+        <Grid
+          item
+          sx={{ minHeight: "400px", display: "flex", alignItems: "stretch" }}
+        >
+          <Tiptap contentCallBack={handleContentChange} />
+        </Grid>
         <Collapse in={postError != ""}>
           <Alert
             severity="error"

@@ -1,18 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid, Typography, TextField, IconButton } from "@mui/material";
 import TimeAgo from "./TimeAgo";
 import Link from "next/link";
 import styles from "../styles/following.module.css";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAuth } from "../hooks/useAuth";
-import Image from "next/image";
+import ReactLoading from "react-loading";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-type follow = {
+type Follow = {
   userId: number;
-  profilePicture: string;
-  username: string;
-  dateFollowed: string;
+  followProfilePicture: string;
+  followUsername: string;
+  createdAt: string;
 };
 
 type Props = {
@@ -20,50 +21,74 @@ type Props = {
 };
 
 const Follow = ({ type }: Props) => {
-  const { settings } = useAuth();
+  const { settings, refresh } = useAuth();
   const theme = settings?.colorTheme || "light";
   const [followSearch, setFollowSearch] = useState("");
-  const [followList, setFollowList] = useState<follow[]>([
-    // {
-    //   userId: 1,
-    //   profilePicture:
-    //     "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722712293/zzplweeh6wnidyqfzhgt.jpg",
-    //   username: "Follower1",
-    //   dateFollowed: "2024-08-04 20:21:09.318",
-    // },
-    // {
-    //   userId: 2,
-    //   profilePicture:
-    //     "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722712293/zzplweeh6wnidyqfzhgt.jpg",
-    //   username: "Follower2",
-    //   dateFollowed: "2024-08-04 20:21:09.318",
-    // },
-    // {
-    //   userId: 3,
-    //   profilePicture:
-    //     "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722712293/zzplweeh6wnidyqfzhgt.jpg",
-    //   username: "Follower3",
-    //   dateFollowed: "2024-08-04 20:21:09.318",
-    // },
-    // {
-    //   userId: 4,
-    //   profilePicture:
-    //     "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722712293/zzplweeh6wnidyqfzhgt.jpg",
-    //   username: "Follower4",
-    //   dateFollowed: "2024-08-04 20:21:09.318",
-    // },
-    // {
-    //   userId: 5,
-    //   profilePicture:
-    //     "https://res.cloudinary.com/drk8ctpvl/image/upload/v1722712293/zzplweeh6wnidyqfzhgt.jpg",
-    //   username: "Follower5",
-    //   dateFollowed: "2024-08-04 20:21:09.318",
-    // },
-  ]);
+  const [currentSearch, setCurrentSearch] = useState("");
+  const [followList, setFollowList] = useState<Follow[]>([]);
+  const [followPageCount, setFollowPageCount] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   const handleFollowSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFollowSearch(e.target.value);
   };
+  const handleSetCurrentSearch = () => {
+    setCurrentSearch(followSearch);
+    setCurrentPage(1);
+    setFollowList([]);
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const getFollows = async () => {
+      let url = `${backendUrl}/follow/${
+        type == "followers" ? "followers" : "following"
+      }`;
+      if (currentSearch) {
+        url += `?search=${currentSearch}`;
+      }
+
+      let status: boolean | null = null;
+
+      await fetch(url, {
+        method: "GET",
+        credentials: "include",
+        signal: controller.signal,
+      })
+        .then((res) => {
+          if (res.ok) {
+            status = true;
+            return res.json();
+          } else if (res.status === 401) {
+            status = false;
+          }
+        })
+        .then((data) => {
+          if (data) {
+            setFollowList((prev) => prev.concat(data.followList));
+            setFollowPageCount(data.followPageCount);
+          }
+        })
+        .catch((error) => {
+          if (String(error.name) !== "AbortError") {
+            console.log(error);
+          }
+        });
+
+      if (status == false) {
+        const refreshed = await refresh();
+        if (refreshed) {
+          getFollows();
+        }
+      }
+    };
+    getFollows();
+    return () => {
+      controller.abort();
+    };
+  }, [currentSearch, currentPage, backendUrl, type]);
 
   return (
     <Grid container id={styles.following_container}>
@@ -88,44 +113,62 @@ const Follow = ({ type }: Props) => {
             placeholder={`Search for ${type}`}
             onChange={handleFollowSearchChange}
           />
-          <IconButton>
+          <IconButton onClick={handleSetCurrentSearch}>
             <SearchIcon />
           </IconButton>
         </Grid>
-        <Grid item id={styles.following_box_content}>
-          {followList.length > 0 ? (
-            followList.map((follow) => (
-              <Link
-                href={`/feed/${follow.userId}`}
-                key={follow.userId}
-                className={styles.following_follow}
-              >
-                <Grid item className={styles.following_follow_info}>
-                  <Image
-                    src={follow.profilePicture}
-                    width={40}
-                    height={40}
-                    className={styles.following_follow_image}
-                    alt={"Profile Picture"}
-                  />
-                  <Grid item>
-                    <Typography
-                      className={styles.following_follow_info_username}
-                    >
-                      {follow.username}
-                    </Typography>
-                    <Typography className={styles.following_follow_date}>
-                      <TimeAgo date={new Date(follow.dateFollowed)} />
-                    </Typography>
+        <Grid
+          item
+          className={styles.following_box_content}
+          id={`following_box_content_${type}`}
+        >
+          <InfiniteScroll
+            dataLength={followList.length}
+            next={() => setCurrentPage((prev) => prev + 1)}
+            hasMore={
+              followList.length > 0 ? currentPage < followPageCount : false
+            }
+            loader={
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <ReactLoading type={"spin"} />
+              </div>
+            }
+            scrollableTarget={`following_box_content_${type}`}
+          >
+            {followList.length > 0 ? (
+              followList.map((follow) => (
+                <Link
+                  href={`/feed/${follow.userId}`}
+                  key={follow.userId.toString() + " " + type}
+                  className={styles.following_follow}
+                >
+                  <Grid item className={styles.following_follow_info}>
+                    <img
+                      src={follow.followProfilePicture}
+                      width={40}
+                      height={40}
+                      className={styles.following_follow_image}
+                      alt={"Profile Picture"}
+                    />
+                    <Grid item>
+                      <Typography
+                        className={styles.following_follow_info_username}
+                      >
+                        {follow.followUsername}
+                      </Typography>
+                      <Typography className={styles.following_follow_date}>
+                        <TimeAgo date={new Date(follow.createdAt)} />
+                      </Typography>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Link>
-            ))
-          ) : (
-            <Typography id={styles.following_no_following}>
-              {type == "following" ? "Not Following Anyone" : "No Followers"}
-            </Typography>
-          )}
+                </Link>
+              ))
+            ) : (
+              <Typography id={styles.following_no_following}>
+                {type == "following" ? "Not Following Anyone" : "No Followers"}
+              </Typography>
+            )}
+          </InfiniteScroll>
         </Grid>
       </Grid>
     </Grid>

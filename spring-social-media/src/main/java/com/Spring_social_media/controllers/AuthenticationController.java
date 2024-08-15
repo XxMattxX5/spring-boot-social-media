@@ -107,12 +107,12 @@ public class AuthenticationController {
     
     // Checks if token is still valid
     @PostMapping("/checkAuth")
-    public void checkAuth(HttpServletResponse response, @CookieValue String access_token) {
+    public void checkAuth(HttpServletResponse response, @CookieValue(required = false) String access_token) {
     
-        if (authenticationService.checkToken(access_token)) {
-            response.setStatus(HttpStatus.OK.value());
+        if (access_token != null && authenticationService.checkToken(access_token)) {
+            response.setStatus(200);
         } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not valid or doesn't exist");
         }
         
         return;
@@ -121,6 +121,7 @@ public class AuthenticationController {
     // Refreshes access and refresh token if the refresh token is valid
     @PostMapping("/refresh")
     public @ResponseBody String refreshToken(HttpServletResponse response, @CookieValue String refresh_token, @CookieValue String deviceId){
+        System.out.println("Refreshing");
         try {
             // Verifies that refresh_token is valid
             RefreshToken refreshToken = refreshTokenService.findByTokenAndDeviceId(refresh_token, deviceId);
@@ -136,21 +137,16 @@ public class AuthenticationController {
             return refreshToken.getToken();
             
         } catch (RefreshTokenNotFoundException e) {
-            System.out.println(e.getMessage());
-            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            return "Failed";
-            
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+           
         } catch (RefreshTokenExpiredException e) {
-            System.out.println(e.getMessage());
-            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            return "Failed";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        
         } catch (RefreshTokenWrongDeviceException e) {
-            System.out.println(e.getMessage());
-            response.setStatus(401);
             authenticationService.clearCredentials(response);
-            return "Failed";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } 
     }
 }

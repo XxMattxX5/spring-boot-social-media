@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { checkAuth } from "./app/lib/ServerAuth";
 
 export async function middleware(request: NextRequest) {
-  const protectedRoutes: Array<string> = ["/profile", "/", "/feed", "/explore"];
+  const protectedRoutes: Array<string> = ["/profile", "/feed"];
   const access_token = request.cookies.get("access_token")?.value;
   const refresh_token = request.cookies.get("refresh_token")?.value;
   const username = request.cookies.get("username")?.value;
@@ -22,16 +22,6 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname == "/loading") {
     return NextResponse.redirect(new URL("/", request.url));
   }
-  // if (request.nextUrl.pathname == "/loading") {
-  //   console.log("HERE");
-  //   const redirect = request.nextUrl.searchParams.get("redirect") || "/";
-
-  //   if (access_token) {
-  //     return NextResponse.redirect(new URL(redirect, request.url));
-  //   }
-
-  //   return NextResponse.next();
-  // }
 
   if (!protectedRoutes.includes(request.nextUrl.pathname)) {
     return NextResponse.next();

@@ -44,9 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final Cookie[] cookies = request.getCookies();
         String access_cookie = null;
-        
+
         if (cookies == null) {
-            response.setStatus(401);
             filterChain.doFilter(request, response);
             return;
         }
@@ -58,17 +57,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         if (access_cookie == null) {
-            response.setStatus(401);
             filterChain.doFilter(request, response);
             return;
         } 
+
+        
         try {
-            
             final String jwt = access_cookie;
             final String userEmail = jwtService.extractUsername(jwt);
+            
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+            
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+                } 
             }
 
             filterChain.doFilter(request, response);

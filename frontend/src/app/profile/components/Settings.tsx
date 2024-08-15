@@ -10,29 +10,23 @@ import {
 } from "@mui/material";
 import styles from "../../styles/profile.module.css";
 import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const Settings = () => {
+  const router = useRouter();
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const { settings, fetchUser, refresh } = useAuth();
   const theme = settings?.colorTheme || "light";
-  const [postVisibility, setPostVisibility] = useState(
-    settings?.postVisibility
-  );
-  const [nameVisibility, setNameVisibility] = useState(
-    settings?.nameVisibility
-  );
+  const [allowFollows, setAllowFollows] = useState(settings?.allowFollows);
+
   const [colorTheme, setColorTheme] = useState(settings?.colorTheme);
   const [profileVisibility, setProfileVisibility] = useState(
     settings?.profileVisibility
   );
 
-  const handlePostVisibilityChange = (e: SelectChangeEvent) => {
-    setPostVisibility(e.target.value);
-  };
-
-  const handleNameVisibilityChange = (e: SelectChangeEvent) => {
-    setNameVisibility(e.target.value);
+  const handleAllowFollowsChange = (e: SelectChangeEvent) => {
+    setAllowFollows(e.target.value);
   };
 
   const handleColorThemeChange = (e: SelectChangeEvent) => {
@@ -45,14 +39,14 @@ const Settings = () => {
 
   const ResetSettings = () => {
     if (confirm("Are you sure you want to reset your settings?")) {
-      setPostVisibility("everyone");
-      setNameVisibility("everyone");
+      setAllowFollows("yes");
+      setProfileVisibility("everyone");
       setColorTheme("light");
     }
   };
 
   const updateSettings = useCallback(async () => {
-    let status = false;
+    let status = null;
     const headers = {
       "Content-Type": "application/json",
     };
@@ -61,17 +55,19 @@ const Settings = () => {
       headers: headers,
       credentials: "include",
       body: JSON.stringify({
-        postVisibility: postVisibility,
-        nameVisibility: nameVisibility,
+        allowFollows: allowFollows,
+        profileVisibility: profileVisibility,
         colorTheme: colorTheme,
       }),
     })
       .then((res) => {
         if (res.ok) {
+          router.refresh();
           status = true;
           fetchUser();
           return;
-        } else {
+        } else if (res.status === 401) {
+          status = false;
           return;
         }
       })
@@ -79,7 +75,6 @@ const Settings = () => {
 
     if (status == false) {
       const refreshed = await refresh();
-
       if (refreshed) {
         updateSettings();
       }
@@ -88,25 +83,25 @@ const Settings = () => {
     backendUrl,
     colorTheme,
     fetchUser,
-    nameVisibility,
-    postVisibility,
+    allowFollows,
+    profileVisibility,
     refresh,
   ]);
 
   useEffect(() => {
     if (
-      postVisibility != settings?.postVisibility ||
-      nameVisibility != settings?.nameVisibility ||
+      allowFollows != settings?.allowFollows ||
+      profileVisibility != settings?.profileVisibility ||
       colorTheme != settings?.colorTheme
     ) {
       updateSettings();
     }
   }, [
-    postVisibility,
-    nameVisibility,
+    allowFollows,
+    profileVisibility,
     colorTheme,
-    settings?.postVisibility,
-    settings?.nameVisibility,
+    settings?.allowFollows,
+    settings?.profileVisibility,
     settings?.colorTheme,
     updateSettings,
   ]);
@@ -122,22 +117,22 @@ const Settings = () => {
             className={styles.settings_option_label}
             sx={{ color: theme == "dark" ? "white" : "black" }}
           >
-            Post Visibility
+            Allow Follows
           </Typography>
           <Select
             className={styles.settings_option_dropdown}
             sx={{
               color: theme == "dark" ? "white" : "black",
             }}
-            value={postVisibility}
-            onChange={handlePostVisibilityChange}
+            value={allowFollows}
+            onChange={handleAllowFollowsChange}
             inputProps={{ className: styles.settings_option_dropdown_input }}
           >
-            <MenuItem value="followers">Followers Only</MenuItem>
-            <MenuItem value="everyone">Everyone</MenuItem>
+            <MenuItem value="yes">Yes</MenuItem>
+            <MenuItem value="no">No</MenuItem>
           </Select>
         </Grid>
-        <Grid item className={styles.settings_option_box}>
+        {/* <Grid item className={styles.settings_option_box}>
           <Typography
             className={styles.settings_option_label}
             sx={{ color: theme == "dark" ? "white" : "black" }}
@@ -156,7 +151,7 @@ const Settings = () => {
             <MenuItem value="followers">Followers Only</MenuItem>
             <MenuItem value="everyone">Everyone</MenuItem>
           </Select>
-        </Grid>
+        </Grid> */}
         <Grid item className={styles.settings_option_box}>
           <Typography
             className={styles.settings_option_label}

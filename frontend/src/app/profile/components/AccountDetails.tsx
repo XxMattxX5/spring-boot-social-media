@@ -42,7 +42,7 @@ const AccountDetails = () => {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
-    let status = false;
+    let status = null;
     await fetch(`${backendUrl}/user/update_info`, {
       method: "PATCH",
       headers: headers,
@@ -60,7 +60,8 @@ const AccountDetails = () => {
           setErrors({ error1: "", error2: "" });
         } else if (res.status === 400) {
           return res.json();
-        } else {
+        } else if (res.status === 401) {
+          status = false;
           return;
         }
       })
@@ -74,9 +75,9 @@ const AccountDetails = () => {
       })
       .catch((error) => console.log(error));
 
-    if (!status) {
-      const success = await refresh();
-      if (success) {
+    if (status == false) {
+      const refreshed = await refresh();
+      if (refreshed) {
         updateInfo();
       }
     }

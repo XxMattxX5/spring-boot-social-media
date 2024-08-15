@@ -13,7 +13,7 @@ interface CloudinaryUploadWidgetInfo {
 }
 
 const ProfileImage = () => {
-  const { user, fetchUser, settings } = useAuth();
+  const { user, fetchUser, settings, refresh } = useAuth();
   const theme = settings?.colorTheme || "light";
   const profile_picture = user?.profilePicture || "";
   const [cookies, setCookie] = useCookies(["username"]);
@@ -21,8 +21,9 @@ const ProfileImage = () => {
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
-  const updatePicture = (imageUrl: string) => {
-    fetch(`${backendUrl}/user/profile_picture`, {
+  const updatePicture = async (imageUrl: string) => {
+    let status = null;
+    await fetch(`${backendUrl}/user/profile_picture`, {
       method: "PATCH",
       credentials: "include",
       headers: {
@@ -34,12 +35,23 @@ const ProfileImage = () => {
     })
       .then((res) => {
         if (res.ok) {
+          status = true;
           fetchUser();
+        } else if (res.status == 401) {
+          status = false;
+          return;
         } else {
           throw new Error("Failed to update profile_picture");
         }
       })
       .catch((error) => console.log(error));
+
+    if (status == false) {
+      const refreshed = await refresh();
+      if (refreshed) {
+        updatePicture(imageUrl);
+      }
+    }
   };
 
   return (

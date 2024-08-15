@@ -39,6 +39,7 @@ type Post = {
   id: number;
   content: string;
   createdAt: string;
+  userId: number;
 };
 type PostResponse = {
   postList: Post[];
@@ -78,10 +79,10 @@ export default async function Explore({
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) {
-  const page = searchParams?.page;
-  const search = searchParams?.search;
-  const type = searchParams?.type;
-  const sort = searchParams?.sort;
+  const page = searchParams?.page || "1";
+  const search = searchParams?.search || "";
+  const type = searchParams?.type || "post";
+  const sort = searchParams?.sort || "createdAtDesc";
   const postResponse: PostResponse = await getPosts(page, search, type, sort);
   const pageCount = postResponse.pageCount;
   const posts = postResponse.postList;

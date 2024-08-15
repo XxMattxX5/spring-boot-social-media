@@ -19,7 +19,6 @@ const CreateNewPostButton = () => {
       <Grid item id="create_new_post">
         <Button fullWidth onClick={handleDisplayCreatePostchange}>
           <Typography variant="h4">Create New Post</Typography>
-          {/* <AddIcon /> */}
         </Button>
       </Grid>
     </>

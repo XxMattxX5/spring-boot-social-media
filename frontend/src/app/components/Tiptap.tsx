@@ -129,6 +129,8 @@ const Tiptap = ({ contentCallBack }: Props) => {
       style={{
         width: "100%",
         boxShadow: "0 0 3px #000",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Grid id="editor_toolbar">

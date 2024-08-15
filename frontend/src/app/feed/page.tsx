@@ -42,6 +42,7 @@ type Post = {
   id: number;
   content: string;
   createdAt: string;
+  userId: number;
 };
 
 type PostResponse = {
@@ -85,10 +86,10 @@ export default async function Feed({
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) {
-  const page = searchParams?.page;
-  const search = searchParams?.search;
-  const type = searchParams?.type;
-  const sort = searchParams?.sort;
+  const page = searchParams?.page || "1";
+  const search = searchParams?.search || "";
+  const type = searchParams?.type || "post";
+  const sort = searchParams?.sort || "createdAtDesc";
   const postResponse: PostResponse = await getPosts(page, search, type, sort);
   const posts = postResponse.postList;
   const pageCount = postResponse.pageCount;

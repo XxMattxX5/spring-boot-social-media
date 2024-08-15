@@ -11,8 +11,7 @@ interface UserInfo {
   profilePicture: string;
 }
 interface SettingsInfo {
-  postVisibility: string;
-  nameVisibility: string;
+  allowFollows: string;
   profileVisibility: string;
   colorTheme: string;
 }
@@ -43,16 +42,17 @@ export const AuthProvider = ({ children }: Props) => {
     typeof window !== "undefined" ? localStorage.getItem("user") : null;
   const settingsInfo =
     typeof window !== "undefined" ? localStorage.getItem("settings") : null;
-
   const [user, setUser] = useState(userInfo ? JSON.parse(userInfo) : null);
   const [settings, setSettings] = useState(
     settingsInfo ? JSON.parse(settingsInfo) : null
   );
 
+  let refreshPromise: Promise<boolean | null> | null = null;
+
   const router = useRouter();
 
   const fetchUser = async () => {
-    let status = false;
+    let status = null;
     const headers = {
       Accept: "application/json",
     };
@@ -65,7 +65,8 @@ export const AuthProvider = ({ children }: Props) => {
         if (res.ok) {
           status = true;
           return res.json();
-        } else {
+        } else if (res.status === 401) {
+          status = false;
           return;
         }
       })
@@ -81,9 +82,8 @@ export const AuthProvider = ({ children }: Props) => {
         console.log(error);
       });
 
-    if (!status) {
+    if (status == false) {
       const refreshed = await refresh();
-
       if (refreshed) {
         fetchUser();
       }
@@ -133,21 +133,25 @@ export const AuthProvider = ({ children }: Props) => {
     localStorage.removeItem("user");
     fetch(`${backendUrl}/auth/logout`, {
       credentials: "include",
-
       method: "DELETE",
     })
-      .then((res) => window.location.reload())
+      .then(() => window.location.reload())
       .catch((error) => console.log(error));
   };
 
-  const refresh = async (sig?: AbortController) => {
-    return fetch(`${backendUrl}/auth/refresh`, {
+  const refresh = async () => {
+    if (refreshPromise) {
+      // console.log("Already Refreshing!");
+      return await refreshPromise;
+    }
+
+    // console.log("REFRESHING TOKEN!");
+    refreshPromise = fetch(`${backendUrl}/auth/refresh`, {
       headers: {
         Accept: "application/json",
       },
       method: "POST",
       credentials: "include",
-      signal: sig?.signal,
     })
       .then((res) => {
         if (res.ok) {
@@ -158,14 +162,15 @@ export const AuthProvider = ({ children }: Props) => {
         }
       })
       .catch((error) => {
-        if (String(error.name) !== "AbortError") {
-          console.log("Error refreshing tokens: " + JSON.stringify(error));
-          logout();
-          return false;
-        } else {
-          return null;
-        }
+        console.log("Error refreshing tokens: " + JSON.stringify(error));
+        logout();
+        return false;
+      })
+      .finally(() => {
+        refreshPromise = null;
       });
+
+    return await refreshPromise;
   };
 
   useEffect(() => {
@@ -191,7 +196,6 @@ export const AuthProvider = ({ children }: Props) => {
       logout();
     }
   });
-  //Removed Dependecies
 
   return (
     <AuthContext.Provider

@@ -1,22 +1,22 @@
 package com.Spring_social_media.dtos;
 
 public class UpdateSettingsDto {
-    private String postVisibility;
-    private String nameVisibility;
+    private String allowFollows;
+    private String profileVisibility;
     private String colorTheme;
 
-    public void setPostVisibility(String postVisibilty) {
-        this.postVisibility = postVisibilty;
+    public void setAllowFollows(String allowFollows) {
+        this.allowFollows = allowFollows;
     }
-    public String getPostVisibility() {
-        return postVisibility;
+    public String getAllowFollows() {
+        return allowFollows;
     }
 
-    public void setNameVisibility(String nameVisibilty) {
-        this.nameVisibility = nameVisibilty;
+    public void setProfileVisibility(String profileVisibility) {
+        this.profileVisibility = profileVisibility;
     }
-    public String getNameVisibility() {
-        return nameVisibility;
+    public String getProfileVisibility() {
+        return profileVisibility;
     }
 
     public void setColorTheme(String colorTheme) {

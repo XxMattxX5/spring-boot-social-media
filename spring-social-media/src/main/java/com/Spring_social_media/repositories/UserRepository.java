@@ -11,6 +11,7 @@ import java.util.List;
 
 
 public interface UserRepository extends CrudRepository<User, Integer> {
+    Optional<User> findById(Integer id);
     Optional<User> findByName(String name);
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);

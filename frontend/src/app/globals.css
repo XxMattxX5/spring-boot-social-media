@@ -433,11 +433,12 @@ a {
 #editor_text_box {
   font-size: 16px;
   color: black;
+  height: 100%;
 }
 
 #editor_text_box div {
   padding: 10px;
-  min-height: 400px;
+  height: 100%;
   background-color: white;
   padding: 5px;
 }
@@ -464,7 +465,7 @@ a {
   align-items: flex-start;
 }
 #selected_post_box {
-  overflow: scroll;
+  overflow: auto;
   border-radius: 8px;
   position: relative;
   left: 50%;

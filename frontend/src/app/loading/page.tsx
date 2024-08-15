@@ -15,6 +15,7 @@ const Loading = () => {
   const router = useRouter();
   // const redirect = searchParams.get("redirect") || "/";
   const [refreshed, setRefreshed] = useState<boolean | null>(null);
+  // console.log(refreshed);
 
   useEffect(() => {
     if (refreshed != null) {
@@ -27,9 +28,9 @@ const Loading = () => {
   }, [refreshed, router, pathname]);
 
   useEffect(() => {
-    const controller = new AbortController();
+    // const controller = new AbortController();
     const refreshToken = async () => {
-      await refresh(controller).then((res) => {
+      await refresh().then((res) => {
         if (res != null) {
           setRefreshed(res);
         }
@@ -37,7 +38,7 @@ const Loading = () => {
     };
     refreshToken();
     return () => {
-      controller.abort();
+      // controller.abort();
     };
   }, [refresh]);
 

@@ -20,6 +20,7 @@ type Post = {
   id: number;
   content: string;
   createdAt: string;
+  userId: number;
 };
 
 type Props = {
@@ -88,6 +89,7 @@ const SelectedPost = ({ post, clearPostCallBack }: Props) => {
           postId={post.id}
           likes={post.likeCount}
           username={post.username}
+          userId={post.userId}
         />
       </Grid>
     </Grid>
