@@ -10,7 +10,10 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   let isLogged = false;
 
-  if (request.nextUrl.pathname.includes("/profile/view")) {
+  if (
+    request.nextUrl.pathname.includes("/profile/view") &&
+    !request.nextUrl.pathname.includes("/profile/view/unauthorized")
+  ) {
     const match = request.nextUrl.pathname.match(/^\/profile\/view\/([^\/]+)$/);
 
     if (match) {
@@ -20,7 +23,9 @@ export async function middleware(request: NextRequest) {
       if (authStatus === 200) {
         return NextResponse.next();
       } else if (authStatus === 403) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.redirect(
+          new URL("/profile/view/unauthorized", request.url)
+        );
       } else if (authStatus === 401) {
         return NextResponse.rewrite(
           new URL(`/loading?redirect=${request.nextUrl.pathname}`, request.url)
