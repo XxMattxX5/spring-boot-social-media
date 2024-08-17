@@ -108,7 +108,7 @@ public class PostService {
         }
        
         // Create Pageable object with sort
-        Pageable pageable = PageRequest.of(page - 1, 1, Sort.by(direction, sortField));
+        Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(direction, sortField));
 
         // Gets field to be searched
         if (searchType.equals("user")) {

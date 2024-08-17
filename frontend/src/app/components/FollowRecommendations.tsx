@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
 import styles from "../styles/FollowRecommendations.module.css";
 import { useAuth } from "../hooks/useAuth";
+import Link from "next/link";
 
 type Recommendation = {
   id: number;
@@ -114,7 +115,9 @@ const FollowRecommendations = () => {
                   width={50}
                   className={styles.followrec_box_info_img}
                 />
-                <Typography>{rec.username}</Typography>
+                <Typography>
+                  <Link href={`/profile/view/${rec.id}`}>{rec.username}</Link>
+                </Typography>
               </Grid>
               <Grid item className={styles.followrec_box_follow_button}>
                 <Button onClick={() => follow(rec.id)}>Follow</Button>

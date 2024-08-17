@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
 import { SafeHtmlServer } from "../components/SafeHtml";
-import React from "react";
+import React, { Suspense } from "react";
 
 const TimeAgo = dynamic(() => import("../components/TimeAgo"), { ssr: false });
 

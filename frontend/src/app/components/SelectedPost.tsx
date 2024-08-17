@@ -6,6 +6,7 @@ import ReactLoading from "react-loading";
 import TimeAgo from "../components/TimeAgo";
 import PostBottomBar from "./PostBottomBar";
 import { useScrollBlock } from "../hooks/useScrollBlock";
+import Link from "next/link";
 
 const SafeHtmlClient = lazy(() =>
   import("../components/SafeHtml").then((module) => ({
@@ -61,7 +62,9 @@ const SelectedPost = ({ post, clearPostCallBack }: Props) => {
             id="select_post_profile_picture"
           />
           <Grid id="selected_post_info">
-            <Typography id="selected_post_username">{post.username}</Typography>
+            <Typography id="selected_post_username">
+              <Link href={`/profile/view/${post.userId}`}>{post.username}</Link>
+            </Typography>
             <Typography id="selected_post_date">
               <TimeAgo date={new Date(post.createdAt)} />
             </Typography>

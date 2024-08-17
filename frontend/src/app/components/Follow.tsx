@@ -145,7 +145,7 @@ const Follow = ({ type }: Props) => {
             {followList.length > 0 ? (
               followList.map((follow) => (
                 <Link
-                  href={`/feed/${follow.userId}`}
+                  href={`/profile/view/${follow.userId}`}
                   key={follow.userId.toString() + " " + type}
                   className={styles.following_follow}
                 >
