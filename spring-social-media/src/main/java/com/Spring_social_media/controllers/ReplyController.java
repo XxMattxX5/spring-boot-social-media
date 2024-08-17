@@ -51,10 +51,12 @@ public class ReplyController {
         User user;
         Comment comment;
 
+        // Makes sure reply content isn't empty
         if (replyContent.getContent().equals("")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Content can't be empty");
         }
         
+        // Gets user
         try {
             String username = jwtService.extractUsername(access_token);
             user = userService.findUserByUsername(username);
@@ -62,14 +64,17 @@ public class ReplyController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
+        // Gets comment
         try {
             comment = commentService.getCommentById(id);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
+        // Creates new reply
         replyService.createReply(user, comment, replyContent.getContent());
         response.setStatus(200);
+
         return;
 
     }

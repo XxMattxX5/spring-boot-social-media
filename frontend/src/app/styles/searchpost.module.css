@@ -5,6 +5,7 @@
   row-gap: 5px;
   column-gap: 10px;
   margin-bottom: 10px;
+  align-items: flex-start;
 }
 .searchpost_search_box {
   flex-basis: 300px;

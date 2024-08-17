@@ -13,10 +13,11 @@ type Props = {
 };
 
 const ProfileNav = ({ currentNav }: Props) => {
-  const { logout, settings } = useAuth();
-  const theme = settings?.colorTheme || "light";
   const router = useRouter();
+  const { logout, settings } = useAuth();
+  const theme = settings?.colorTheme || "light"; // User's selected theme
 
+  // Logs out user
   const handleLogout = () => {
     if (confirm("Are you sure you want to logout?")) {
       logout();

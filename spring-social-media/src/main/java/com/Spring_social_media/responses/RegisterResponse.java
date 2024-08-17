@@ -38,7 +38,6 @@ public class RegisterResponse {
         return error4;
     }
 
-    
     public boolean isValid() {
         if (error1 == null && error2 == null && error3 == null && error4 == null) {
             return true;

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -22,15 +22,14 @@ import { useAuth } from "../hooks/useAuth";
 
 const NavBar = () => {
   const { user, logout, settings } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const profile_picture = user?.profilePicture || "";
-  const [showSideNav, setShowSideNav] = useState(false);
-  const [showProfileNav, setShowProfileNav] = useState(false);
-  const [cookies, setCookie] = useCookies(["username"]);
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const username = cookies.username;
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const profile_picture = user?.profilePicture || ""; // User's profile picture
+  const [showSideNav, setShowSideNav] = useState(false); // Whether to display side nav
+  const [showProfileNav, setShowProfileNav] = useState(false); // Whether to display profile nav
+  const [cookies, setCookie] = useCookies(["username"]); // User's cookies
+  const username = cookies.username; // User's username
 
+  // List of pages and their links
   const pages = [
     { name: "Home", link: "/" },
     { name: "Feed", link: "/feed" },
@@ -38,11 +37,13 @@ const NavBar = () => {
     { name: "Explore", link: "/explore" },
   ];
 
+  // Hides navs when url changes
   const handleUrlChange = () => {
     setShowProfileNav(false);
     setShowSideNav(false);
   };
 
+  // Logs out user
   const handleLogout = () => {
     logout();
   };

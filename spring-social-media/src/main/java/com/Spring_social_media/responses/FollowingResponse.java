@@ -1,6 +1,5 @@
 package com.Spring_social_media.responses;
 
-import com.Spring_social_media.models.Follow;
 import com.Spring_social_media.projections.FollowingProjection;
 import java.util.List;
 

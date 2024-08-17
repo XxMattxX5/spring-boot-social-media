@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Button, Select, MenuItem, Grid, Tooltip } from "@mui/material";
@@ -18,9 +18,8 @@ import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
-import { useAuth } from "../hooks/useAuth";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { CldImage, CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget } from "next-cloudinary";
 
 interface CloudinaryUploadWidgetInfo {
   resource_type: string;
@@ -32,12 +31,11 @@ type Props = {
 };
 
 const Tiptap = ({ contentCallBack }: Props) => {
-  const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || "";
-  const { settings } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const [currentFontSize, setCurrentFontSize] = useState<string>("16px");
-  const [currentFontFamily, setCurrentFontFamily] = useState<string>("Arial");
+  const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || ""; // Cloudinary upload present
+  const [currentFontSize, setCurrentFontSize] = useState<string>("16px"); // Default font size
+  const [currentFontFamily, setCurrentFontFamily] = useState<string>("Arial"); // Default font family
 
+  // Gets rid of empty tags
   const cleanHtml = (html: string) => {
     const div = document.createElement("div");
     div.innerHTML = html;
@@ -58,6 +56,7 @@ const Tiptap = ({ contentCallBack }: Props) => {
     return div.innerHTML;
   };
 
+  // Editor settings
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -96,21 +95,25 @@ const Tiptap = ({ contentCallBack }: Props) => {
     return null;
   }
 
+  // Handles changes to font size
   const changeFontSize = (size: string) => {
     editor.chain().focus().setFontSize(size).run();
     setCurrentFontSize(size);
   };
 
+  // Handles Changes to font color
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const color = e.target.value;
     editor.chain().focus().setColor(color).run();
   };
 
+  // Handles changes to font family
   const handleFontFamilyChange = (fontFamily: string) => {
     editor.chain().focus().setFontFamily(fontFamily).run();
     setCurrentFontFamily(fontFamily);
   };
 
+  // Inserts img into editor
   function insertImageIntoEditor(imageUrl: string) {
     if (!editor) {
       return;

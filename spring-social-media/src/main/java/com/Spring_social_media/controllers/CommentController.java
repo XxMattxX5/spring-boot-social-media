@@ -26,8 +26,6 @@ import com.Spring_social_media.projections.CommentWithRepliesProjection;
 import com.Spring_social_media.responses.CommentResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.Spring_social_media.util.HtmlSanitizer;
-
 
 @RequestMapping("/comment")
 @RestController
@@ -50,8 +48,7 @@ public class CommentController {
         this.jwtService = jwtService;
     }
 
-
-
+    // Gets comments for a post given an id
     @GetMapping("/comments/{id}")
     public ResponseEntity<CommentResponse> getPostComments(HttpServletResponse response, @PathVariable Integer id, @RequestParam(defaultValue = "1") Integer page) {
         Post post;
@@ -62,7 +59,10 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+        // Gets comments
         Page<CommentWithRepliesProjection> comments = commentService.getCommentsWithReplies(post, page);
+
+        // Puts comments and comment info into response
         CommentResponse commentResponse = new CommentResponse();
         commentResponse.setCommentList(comments.getContent());
         commentResponse.setCommentPages(comments.getTotalPages());
@@ -70,30 +70,35 @@ public class CommentController {
         return ResponseEntity.ok(commentResponse);
     }
 
+    // Creates a new comment giving a post id
     @PostMapping("/create/{id}")
     public void createComment(HttpServletResponse response, @CookieValue String access_token, @PathVariable Integer id, @RequestBody NewCommentDto commentContent) {
         User user;
         Post post;
 
+        // Makes sure comment content isn't empty
         if (commentContent.getContent().equals("")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Content can't be empty");
         }
         
+        // Finds user
         try {
             String username = jwtService.extractUsername(access_token);
             user = userService.findUserByUsername(username);
-            
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
+        // Finds post
         try {
             post = postService.getPostById(id);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
 
+        // Creates comment
         commentService.createComment(user, post, commentContent.getContent());
+        
         response.setStatus(200);
         return;
     

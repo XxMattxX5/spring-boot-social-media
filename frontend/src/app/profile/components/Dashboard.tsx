@@ -1,12 +1,5 @@
 import React, { useState, Suspense, useEffect, useCallback } from "react";
-import {
-  Grid,
-  Typography,
-  Button,
-  TextField,
-  IconButton,
-  Box,
-} from "@mui/material";
+import { Grid, Typography, Button, TextField, IconButton } from "@mui/material";
 import styles from "../../styles/profile.module.css";
 import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
@@ -37,26 +30,29 @@ type Post = {
 
 const Dashboard = () => {
   const { settings, refresh } = useAuth();
+  // Url for backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const theme = settings?.colorTheme || "light";
-  const [followers, setFollowers] = useState<Follow[]>([]);
-  const [followerCount, setFollowerCount] = useState(0);
-  const [followerPageCount, setFollowerPageCount] = useState(5);
-  const [searchFollower, setSearchFollower] = useState("");
-  const [currentSearchFollower, setCurrentSearchFollower] = useState("");
-  const [currentFollowerPage, setCurrentFollowerPage] = useState(1);
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const [followers, setFollowers] = useState<Follow[]>([]); // List of followers
+  const [followerCount, setFollowerCount] = useState(0); // Number of followers
+  const [followerPageCount, setFollowerPageCount] = useState(0); // Number of follower pages
+  const [searchFollower, setSearchFollower] = useState(""); // Follower search input
+  const [currentSearchFollower, setCurrentSearchFollower] = useState(""); // Current follower search being viewed
+  const [currentFollowerPage, setCurrentFollowerPage] = useState(1); // Current follower page
 
-  const [following, setFollowing] = useState<Follow[]>([]);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [followingPageCount, setFollowingPageCount] = useState(0);
-  const [currentFollowingPage, setCurrentFollowingPage] = useState(1);
-  const [searchFollowing, setSearchFollowing] = useState("");
-  const [currentSearchFollowing, setCurrentSearchFollowing] = useState("");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [postPages, setPostPages] = useState(0);
-  const [currentPostPage, setCurrentPostPage] = useState(1);
+  const [following, setFollowing] = useState<Follow[]>([]); // List of following
+  const [followingCount, setFollowingCount] = useState(0); // Number of following
+  const [followingPageCount, setFollowingPageCount] = useState(0); // Following page count
+  const [currentFollowingPage, setCurrentFollowingPage] = useState(1); // Current following page
+  const [searchFollowing, setSearchFollowing] = useState(""); // Following input
+  const [currentSearchFollowing, setCurrentSearchFollowing] = useState(""); // Current following search being viewed
 
+  const [posts, setPosts] = useState<Post[]>([]); // List of posts
+  const [postPages, setPostPages] = useState(0); // Number of post pages
+  const [currentPostPage, setCurrentPostPage] = useState(1); // Current post page
+
+  // Changes current follower search
   const handleSearchFollowerChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -65,6 +61,7 @@ const Dashboard = () => {
     setFollowers([]);
   };
 
+  // Changes current following search
   const handleSearchFollowingChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -72,6 +69,7 @@ const Dashboard = () => {
     setCurrentFollowingPage(1);
   };
 
+  // Removes follower or following after block or unfollow
   const removeFollow = (type: "followers" | "following", userId: number) => {
     if (type == "followers") {
       setFollowers(followers.filter((item) => item.userId !== userId));
@@ -81,6 +79,7 @@ const Dashboard = () => {
     }
   };
 
+  // Gets  list of followers and following on mount
   useEffect(() => {
     setFollowers([]);
   }, [currentSearchFollower]);
@@ -88,6 +87,7 @@ const Dashboard = () => {
     setFollowing([]);
   }, [currentSearchFollowing]);
 
+  // Gets list of followers
   const getFollowers = useCallback(
     async (sig?: AbortSignal) => {
       let url = `${backendUrl}/follow/${"followers"}?page=${currentFollowerPage}`;
@@ -123,6 +123,7 @@ const Dashboard = () => {
           }
         });
 
+      // Refreshes token and tries again if error was a 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed) {
@@ -133,6 +134,7 @@ const Dashboard = () => {
     [currentSearchFollower, currentFollowerPage, backendUrl, refresh]
   );
 
+  // Gets list of following
   const getFollowing = useCallback(
     async (sig?: AbortSignal) => {
       let url = `${backendUrl}/follow/${"following"}?page=${currentFollowingPage}`;
@@ -168,6 +170,7 @@ const Dashboard = () => {
           }
         });
 
+      // Refreshes token and tries again if error was a 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed) {
@@ -178,6 +181,7 @@ const Dashboard = () => {
     [currentSearchFollowing, currentFollowingPage, backendUrl, refresh]
   );
 
+  // Unfollows user
   const unFollow = async (userId: number) => {
     let status = null;
 
@@ -194,6 +198,7 @@ const Dashboard = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {
@@ -202,6 +207,7 @@ const Dashboard = () => {
     }
   };
 
+  // Gets a list of posts
   const getPosts = useCallback(
     async (sig?: AbortSignal) => {
       let url = `${backendUrl}/post/me?page=${currentPostPage}`;
@@ -231,6 +237,8 @@ const Dashboard = () => {
             console.log(error);
           }
         });
+
+      // Refreshes token and tries again if error was a 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed) {
@@ -241,11 +249,13 @@ const Dashboard = () => {
     [currentPostPage, backendUrl, refresh]
   );
 
+  // Handles unfollowing a user
   const handleUnFollow = async (userId: number) => {
     await unFollow(userId);
     removeFollow("following", userId);
   };
 
+  // Gets dashboard information on mount
   useEffect(() => {
     const abortController = new AbortController();
 
@@ -258,6 +268,7 @@ const Dashboard = () => {
     };
   }, [getPosts, getFollowers, getFollowing]);
 
+  // Blocks a follower
   const blockFollower = async (userId: number) => {
     let status = null;
     await fetch(`${backendUrl}/block/${userId}`, {
@@ -278,6 +289,7 @@ const Dashboard = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {

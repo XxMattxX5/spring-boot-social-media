@@ -12,27 +12,22 @@ import com.Spring_social_media.exceptions.RefreshTokenWrongDeviceException;
 import com.Spring_social_media.services.AuthenticationService;
 import com.Spring_social_media.services.JwtService;
 import com.Spring_social_media.services.RefreshTokenService;
-import com.Spring_social_media.responses.RefreshResponse;
 import com.Spring_social_media.responses.LoginResponse;
 import com.Spring_social_media.responses.RegisterResponse;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Cookie;
 
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import java.time.Instant;
 
 
 
@@ -60,6 +55,7 @@ public class AuthenticationController {
         
         RegisterResponse regResponse = authenticationService.signupValidation(registerUserDto);
 
+        // Input is valid a new user is created
         if (regResponse.isValid()) {
             authenticationService.signup(registerUserDto);
             return ResponseEntity.ok(regResponse);
@@ -91,7 +87,6 @@ public class AuthenticationController {
         authenticationService.setCredentials(response, jwtToken, refreshToken, loginUserDto.getDeviceId());
 
         loginResponse.setMessage("Login Successful!");
-
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -102,7 +97,6 @@ public class AuthenticationController {
 
         response = authenticationService.clearCredentials(response);
         return "Logout Successful";
-
     }
     
     // Checks if token is still valid
@@ -111,11 +105,10 @@ public class AuthenticationController {
     
         if (access_token != null && authenticationService.checkToken(access_token)) {
             response.setStatus(200);
+            return;
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not valid or doesn't exist");
         }
-        
-        return;
     }
     
     // Refreshes access and refresh token if the refresh token is valid
@@ -125,8 +118,8 @@ public class AuthenticationController {
         try {
             // Verifies that refresh_token is valid
             RefreshToken refreshToken = refreshTokenService.findByTokenAndDeviceId(refresh_token, deviceId);
-            
             refreshTokenService.verifyExpiration(refreshToken);
+            
             // Creates a new refresh and access token
             User user = refreshToken.getUser();
             refreshToken = refreshTokenService.createRefreshToken(user, deviceId);

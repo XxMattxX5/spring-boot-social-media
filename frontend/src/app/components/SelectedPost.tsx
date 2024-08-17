@@ -30,9 +30,10 @@ type Props = {
 
 const SelectedPost = ({ post, clearPostCallBack }: Props) => {
   const { settings } = useAuth();
-  const [blockScroll, allowScroll] = useScrollBlock();
-  const theme = settings?.colorTheme || "light";
+  const [blockScroll, allowScroll] = useScrollBlock(); // Used to allow and block scroll
+  const theme = settings?.colorTheme || "light"; // User's selected theme
 
+  // Blocks scroll on mount and allows scroll on unmount
   useEffect(() => {
     blockScroll();
     return () => {

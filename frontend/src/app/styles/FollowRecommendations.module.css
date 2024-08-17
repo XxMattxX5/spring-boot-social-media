@@ -21,10 +21,6 @@
   color: white;
 }
 
-/* #followrec_content_box {
-  padding: 0px 0px;
-  overflow: hidden;
-} */
 .followrec_box {
   display: flex;
   flex-direction: row;

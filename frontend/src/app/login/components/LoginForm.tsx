@@ -21,17 +21,15 @@ import { useAuth } from "../../hooks/useAuth";
 
 const LoginForm = () => {
   const { login } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState(""); // Username input
+  const [password, setPassword] = useState(""); // Password input
+  const [loginError, setLoginError] = useState(""); // Error for user's login attempt
+  const [showPassword, setShowPassword] = useState(false); // Whether to display password
   const [created, setCreated] = useState(
     useSearchParams().get("created") == "true" ? "true" : "false"
   );
-  const router = useRouter();
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Gets a user id from user's localstorage or creates them a new one
   const getDeviceId = () => {
     let deviceId = localStorage.getItem("device_id");
 
@@ -45,14 +43,17 @@ const LoginForm = () => {
     return deviceId;
   };
 
+  // Logins in user and sets error if there are any
   const loginUser = async () => {
     setLoginError(await login(username, password, getDeviceId()));
   };
 
+  // Handles changes to the username input
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
+  // Handles changes to the password input
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };

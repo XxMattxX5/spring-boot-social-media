@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography, TextField, IconButton } from "@mui/material";
 import TimeAgo from "./TimeAgo";
 import Link from "next/link";
@@ -22,24 +22,30 @@ type Props = {
 
 const Follow = ({ type }: Props) => {
   const { settings, refresh } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const [followSearch, setFollowSearch] = useState("");
-  const [currentSearch, setCurrentSearch] = useState("");
-  const [followList, setFollowList] = useState<Follow[]>([]);
-  const [followPageCount, setFollowPageCount] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const [followSearch, setFollowSearch] = useState(""); // follow search input
+  const [currentSearch, setCurrentSearch] = useState(""); // Current search results being displayed
+  const [followList, setFollowList] = useState<Follow[]>([]); // List of followers/following
+  const [followPageCount, setFollowPageCount] = useState(0); // List of follow pages
+  const [currentPage, setCurrentPage] = useState(1); // Current page being viewed
+
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Handles user follow search input
   const handleFollowSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFollowSearch(e.target.value);
   };
+
+  // Sets the currents search to the follow search
   const handleSetCurrentSearch = () => {
     setCurrentSearch(followSearch);
     setCurrentPage(1);
     setFollowList([]);
   };
 
+  // Gets a list of followers/following
   useEffect(() => {
     const controller = new AbortController();
     const getFollows = async () => {
@@ -77,6 +83,7 @@ const Follow = ({ type }: Props) => {
           }
         });
 
+      // Refreshes token and tries again if error was 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button, Grid } from "@mui/material";
 import styles from "../../styles/profile.module.css";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
@@ -14,13 +14,14 @@ interface CloudinaryUploadWidgetInfo {
 
 const ProfileImage = () => {
   const { user, fetchUser, settings, refresh } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const profile_picture = user?.profilePicture || "";
-  const [cookies, setCookie] = useCookies(["username"]);
-  const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || "";
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const profile_picture = user?.profilePicture || ""; // User's profile picture
+  const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || ""; // Cloudinary upload preset
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Upload new profile picture
   const updatePicture = async (imageUrl: string) => {
     let status = null;
     await fetch(`${backendUrl}/user/profile_picture`, {
@@ -46,6 +47,7 @@ const ProfileImage = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {

@@ -4,11 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import com.Spring_social_media.models.User;
 
 import java.util.Optional;
-import java.util.List;
-
-
-
-
 
 public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findById(Integer id);

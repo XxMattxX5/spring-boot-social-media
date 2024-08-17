@@ -1,22 +1,17 @@
 "use client";
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useSearchParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "../hooks/useAuth";
-import { useCookies } from "react-cookie";
 
 const Loading = () => {
   const { refresh } = useAuth();
-  const [cookies, setCookies] = useCookies(["access_token", "refresh_token"]);
-  // const searchParams = useSearchParams();
-  const pathname = usePathname();
-
   const router = useRouter();
-  // const redirect = searchParams.get("redirect") || "/";
-  const [refreshed, setRefreshed] = useState<boolean | null>(null);
-  // console.log(refreshed);
+  const pathname = usePathname(); // Pathname for redirect
+  const [refreshed, setRefreshed] = useState<boolean | null>(null); // When refresh when a success or not
 
+  // Reroute logic after refresh attempt
   useEffect(() => {
     if (refreshed != null) {
       if (refreshed == true) {
@@ -27,8 +22,8 @@ const Loading = () => {
     }
   }, [refreshed, router, pathname]);
 
+  // Tries to refresh token on mount
   useEffect(() => {
-    // const controller = new AbortController();
     const refreshToken = async () => {
       await refresh().then((res) => {
         if (res != null) {
@@ -37,9 +32,6 @@ const Loading = () => {
       });
     };
     refreshToken();
-    return () => {
-      // controller.abort();
-    };
   }, [refresh]);
 
   return (

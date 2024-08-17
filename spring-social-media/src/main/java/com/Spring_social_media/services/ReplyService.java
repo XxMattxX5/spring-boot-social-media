@@ -19,6 +19,7 @@ public class ReplyService {
         this.htmlSanitizer = htmlSanitizer;
     }
 
+    // Create a new reply
     public void createReply(User user, Comment comment, String content) {
         String sanitizedContent = htmlSanitizer.sanitize(content);
 

@@ -10,23 +10,14 @@ import com.Spring_social_media.services.PostService;
 import com.Spring_social_media.services.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
-import com.Spring_social_media.responses.PostInfoResponse;
-
-
-import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.Spring_social_media.models.User;
 import com.Spring_social_media.models.Post;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RequestMapping("/like")
 @RestController
@@ -44,6 +35,7 @@ public class LikeController {
         this.postService = postService;
     }
 
+    // Likes a post or unlikes it given an id
     @PostMapping(path="/{id}")
     public void likePost(HttpServletResponse response,@PathVariable(value="id") Integer id, @CookieValue String access_token) {
         try {

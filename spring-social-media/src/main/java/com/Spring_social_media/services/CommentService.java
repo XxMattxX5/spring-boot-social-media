@@ -25,6 +25,7 @@ public class CommentService {
         this.htmlSanitizer = htmlSanitizer;
     }
 
+    // Creates a new comment
     public void createComment(User user, Post post, String content) {
         String sanitizedContent = htmlSanitizer.sanitize(content);
 
@@ -34,11 +35,12 @@ public class CommentService {
         newComment.setContent(sanitizedContent);
 
         commentRepository.save(newComment);
-
     }
 
+    // Gets a list of comments and their replies
     public Page<CommentWithRepliesProjection> getCommentsWithReplies(Post post, Integer page) {
 
+        // Makes sure page number isn't below zero
         if (page < 1) {
             page = 1;
         }
@@ -48,11 +50,10 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page - 1, 1, Sort.by(direction, "createdAt"));
 
         return commentRepository.findCommentsWithRepliesByPost(post, pageable);
-
     }
 
+    // Gets a comment given id
     public Comment getCommentById(Integer id) {
-
         return commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
     }
     

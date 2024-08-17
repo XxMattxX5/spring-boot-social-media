@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.Spring_social_media.models.User;
@@ -31,6 +30,7 @@ public class BlockController {
         this.jwtService = jwtService;
     }
 
+    // Blocks user given an id
     @PostMapping("/{id}")
     public void blockUser(HttpServletResponse response, @PathVariable Integer id, @CookieValue String access_token) {
         User blocking;
@@ -44,7 +44,9 @@ public class BlockController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
+        // Blocks user
         blockService.blockUser(blocking, blocked);
+        
         response.setStatus(200);
         return;
 

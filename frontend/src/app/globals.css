@@ -183,7 +183,6 @@ a {
 .side_page_link p {
   font-size: 21px;
   padding: 10px 20px;
-
   transition: all 0.3s ease-in;
 }
 .side_page_link p:hover {
@@ -364,7 +363,6 @@ a {
   padding: 20px;
   padding-top: 0px;
   margin: 0 auto;
-  /* margin-top: 50px; */
   flex-basis: 70%;
   max-width: 100%;
 }
@@ -470,7 +468,6 @@ a {
   position: relative;
   left: 50%;
   transform: translate(-50%, 0%);
-  /* top: 20px; */
   min-height: 300px;
   height: fit-content;
   width: 95%;
@@ -540,11 +537,6 @@ a {
   margin-right: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  /* html {
-    color-scheme: dark;
-  } */
-}
 @media only screen and (max-width: 1200px) {
   #regular_nav {
     display: none;

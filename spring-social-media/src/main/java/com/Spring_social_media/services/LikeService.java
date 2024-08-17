@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.Spring_social_media.repositories.LikeRepository;
-import com.Spring_social_media.services.PostService;
 
 import com.Spring_social_media.models.User;
 import com.Spring_social_media.models.Post;
@@ -21,9 +20,11 @@ public class LikeService {
         this.postService = postService;
     }
 
+    // Creates a like or remove a like if one already exists
     public void createLike(User user, Post post) {
         Optional<Like> oldLike = likeRepository.findByUser(user);
 
+        // Checks if a like already exists before creating a new one
         if (oldLike.isPresent()) {
             likeRepository.delete(oldLike.get());
             postService.removeLike(post);
@@ -37,6 +38,7 @@ public class LikeService {
         
     }
 
+    // Checks if user has already liked post
     public boolean isLiked(User user, Post post) {
         return post.isLikedByUser(user);
     }

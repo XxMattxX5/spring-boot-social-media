@@ -25,12 +25,14 @@ type Props = {
 };
 
 const SearchPost = ({ children, pageCount, showSearchBar }: Props) => {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname(); // Gets pathname
   const { settings } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const searchParams = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") || "1");
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const searchParams = useSearchParams(); // Url search params
+  const currentPage = parseInt(searchParams.get("page") || "1"); // Current page being viewed
+
+  // Page button numbers
   const pages = () => {
     const pagesArray: number[] = [];
     currentPage - 2 > 1 ? pagesArray.push(currentPage - 2) : null;
@@ -41,25 +43,31 @@ const SearchPost = ({ children, pageCount, showSearchBar }: Props) => {
 
     return pagesArray;
   };
+  // Term being search
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get("search") || ""
   );
+  // Current sort option
   const [currentSort, setCurrentSort] = useState(
     searchParams.get("sort") || "createdAtDesc"
   );
+  // Current search type
   const [currentSearchType, setCurrentSearchType] = useState(
     searchParams.get("type") || "post"
   );
+  // Sort option list
   const sortOptions = [
     { name: "Username", value: "username" },
     { name: "Date Posted (Asc)", value: "createdAtAsc" },
     { name: "Date Posted (Desc)", value: "createdAtDesc" },
   ];
+  // Search type option list
   const searchTypeOptions = [
     { name: "Post", value: "post" },
     { name: "User", value: "user" },
   ];
 
+  // Applies selected search options
   const search = (
     s = searchTerm,
     currentType = currentSearchType,
@@ -78,18 +86,23 @@ const SearchPost = ({ children, pageCount, showSearchBar }: Props) => {
     router.push(url);
   };
 
+  // Handles changes to the search term
   const handleSearchTermChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
+  // Handles changes to the sort option
   const handleSortChange = (e: SelectChangeEvent) => {
     setCurrentSort(e.target.value);
     search(undefined, undefined, e.target.value);
   };
+
+  // Handles changes to the search type
   const handleSearchTypeChange = (e: SelectChangeEvent) => {
     setCurrentSearchType(e.target.value);
   };
 
+  // Handles changes to the page
   const handlePageChange = (page: number) => {
     if (currentPage === page || page < 1 || page > pageCount) {
       return;

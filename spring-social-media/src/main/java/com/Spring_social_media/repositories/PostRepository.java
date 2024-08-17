@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Page;
 
-
 import org.springframework.data.repository.query.Param;
 
 import com.Spring_social_media.models.Post;
@@ -38,7 +37,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<PostProjection> searchFollowedPostUser(@Param("search") String search,
                                            @Param("users") List<User> users,
                                            Pageable pageable);
-
 
     Page<PostProjection> findAllProjectedBy(Pageable pageable);
 

@@ -1,6 +1,5 @@
 package com.Spring_social_media.util;
 
-import com.google.common.html.HtmlEscapers;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.springframework.stereotype.Component;

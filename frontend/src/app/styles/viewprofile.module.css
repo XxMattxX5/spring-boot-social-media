@@ -1,0 +1,165 @@
+#viewprofile_main_container {
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+#viewprofile_follow_container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 25px;
+  overflow-x: scroll;
+  padding: 5px;
+}
+#viewprofile_followers_container {
+  flex-grow: 1;
+  flex-basis: 450px;
+  min-width: 350px;
+}
+#viewprofile_following_container {
+  flex-grow: 1;
+  flex-basis: 450px;
+  min-width: 350px;
+}
+.viewprofile_follow_box {
+  box-shadow: black 0px 0px 3px;
+}
+.viewprofile_follow_header {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 5px;
+  flex-grow: 1;
+  column-gap: 3px;
+}
+.viewprofile_follow_box_header {
+  display: flex;
+  flex-direction: row;
+  background-color: #00abf7;
+  font-size: 20px;
+  padding: 5px;
+  color: white;
+}
+.viewprofile_follow_box_header div {
+  flex-grow: 1;
+  text-align: center;
+}
+.viewprofile_follow_box_search {
+  display: flex;
+  position: relative;
+  margin-bottom: 5px;
+  border-radius: 0px;
+}
+.viewprofile_follow_search_input_box {
+  flex-grow: 1;
+}
+.viewprofile_follow_search_input_box div {
+  border-radius: 0;
+}
+.dashboard_follow_search_input {
+  height: 5px;
+  min-height: 5px;
+  flex-grow: 1;
+  padding-right: 48px;
+  border-radius: 0;
+}
+.viewprofile_follow_box_search_button {
+  display: flex;
+  border-radius: 4px;
+  padding: 0px 10px;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  height: 100%;
+}
+
+.viewprofile_follow_box_content {
+  height: 400px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+.viewprofile_follow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+}
+
+.viewprofile_follow:hover {
+  background-color: #9b9b9b;
+}
+.viewprofile_follow_user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.viewprofile_follow_user_img {
+  border-radius: 50%;
+}
+.viewprofile_follow_user_username {
+  margin-left: 5px;
+  font-size: 19px;
+}
+.viewprofile_follow_date {
+  margin-left: auto;
+  margin-right: 10px;
+}
+
+#viewprofile_post_container {
+  margin: 0 auto;
+  margin-top: 25px;
+}
+.viewprofile_postlist_box {
+  box-shadow: black 0px 0px 3px;
+}
+.viewprofile_postlist_content {
+  padding: 15px;
+  flex-wrap: wrap;
+  height: 600px;
+  overflow-y: auto;
+}
+
+.viewprofile_post {
+  min-height: 300px;
+  box-shadow: black 0px 0px 3px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 5px;
+}
+.viewprofile_post_header {
+  padding: 10px;
+  background-color: #00abf7;
+  display: flex;
+  gap: 10px;
+  color: white;
+}
+.viewprofile_post_header_image {
+  border-radius: 50%;
+}
+.viewprofile_post_content {
+  padding: 10px;
+}
+.viewprofile_post_content img {
+  max-width: 100%;
+  margin: 0 auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.follow_loader {
+  margin: 10px auto;
+}
+.html_fallback_loader {
+  width: fit-content;
+  margin: "0 auto";
+}
+
+@media only screen and (max-width: 800px) {
+  .viewprofile_postlist_content {
+    padding: 5px;
+  }
+}

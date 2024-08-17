@@ -26,8 +26,9 @@ type PostResponse = {
   pageCount: number;
 };
 
+// Gets list of popular posts
 const getPopularPosts = async () => {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080"; // Url for the backend
 
   const response = await fetch(`${backendUrl}/post/popular`, {
     method: "GET",
@@ -45,10 +46,10 @@ const getPopularPosts = async () => {
 };
 
 const PopularPosts = async () => {
-  const cookieStore = cookies();
-  const theme = cookieStore.get("theme")?.value || "light";
-  const postResponse: PostResponse = await getPopularPosts();
-  const postList = postResponse.postList;
+  const cookieStore = cookies(); // User's cookies
+  const theme = cookieStore.get("theme")?.value || "light"; // User's selected theme
+  const postResponse: PostResponse = await getPopularPosts(); // Gets list of popular posts
+  const postList = postResponse.postList; // List of posts
 
   return (
     <Grid container id={styles.popular_container}>

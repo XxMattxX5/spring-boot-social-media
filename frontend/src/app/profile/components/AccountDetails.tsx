@@ -6,37 +6,32 @@ import {
   Typography,
   Collapse,
   Alert,
-  Dialog,
 } from "@mui/material";
 import styles from "../../styles/profile.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../../hooks/useAuth";
 
-interface User {
-  name: string;
-  username: string;
-  email: string;
-  profilePicture: string;
-}
-
 const AccountDetails = () => {
   const { user, settings, refresh, fetchUser } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const [name, setName] = useState(user?.name);
-  const [username, setUsername] = useState(user?.username);
-  const [email, setEmail] = useState(user?.email);
-  const [errors, setErrors] = useState({ error1: "", error2: "" });
-  const [success, setSuccess] = useState("");
-  const [deleteError, setDeleteError] = useState("");
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const [name, setName] = useState(user?.name); // Name input
+  const [username, setUsername] = useState(user?.username); // Username input
+  const [email, setEmail] = useState(user?.email); // Email input
+  const [errors, setErrors] = useState({ error1: "", error2: "" }); // Error messages
+  const [success, setSuccess] = useState(""); // Success message
+  const [deleteError, setDeleteError] = useState(""); // Delete account error
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Sets user info on mount
   useEffect(() => {
     setName(user?.name);
     setUsername(user?.username);
     setEmail(user?.email);
   }, [user]);
 
+  // Updates user info
   const updateInfo = async () => {
     const headers = {
       Accept: "application/json",
@@ -75,6 +70,7 @@ const AccountDetails = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {
@@ -83,32 +79,48 @@ const AccountDetails = () => {
     }
   };
 
+  // Handles changes to name input
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  // Handles changes to username input
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
-  const handleDelete = () => {
+  // Makes sure user want to delete account before proceceeding
+  const handleDelete = async (first = true) => {
     if (
+      first == false ||
       confirm(
         "Are you want to delete your account? You can't recover it afterwards."
       )
     ) {
+      let status = null;
       fetch(`${backendUrl}/user/delete`, {
         method: "DELETE",
         credentials: "include",
       })
         .then((res) => {
           if (res.ok) {
+            status = true;
             window.location.reload();
+          } else if (res.status === 401) {
+            status = false;
           } else {
             setDeleteError("Failed to delete account");
           }
         })
         .catch((error) => console.log(error));
+
+      // Refreshes token and tries again if error was a 401
+      if (status == false) {
+        const refreshed = await refresh();
+        if (refreshed) {
+          handleDelete(false);
+        }
+      }
     } else {
       return;
     }
@@ -229,7 +241,7 @@ const AccountDetails = () => {
             backgroundColor: theme == "dark" ? "#33333" : "white",
             color: theme == "dark" ? "white" : "red",
           }}
-          onClick={handleDelete}
+          onClick={() => handleDelete()}
         >
           <DeleteIcon />
           <Typography fontWeight={"bold"}>Delete Account</Typography>

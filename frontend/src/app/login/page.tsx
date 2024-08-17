@@ -9,7 +9,7 @@ const LoginForm = dynamic(() => import("./components/LoginForm"), {
 
 export const metadata: Metadata = {
   title: "Spring Social - Login",
-  description: "...",
+  description: "Login to post and follower other users",
 };
 
 const Login = () => {

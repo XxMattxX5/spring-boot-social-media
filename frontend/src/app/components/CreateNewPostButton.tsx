@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { Grid, Button, Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import CreateNewPost from "./CreateNewPost";
 
 const CreateNewPostButton = () => {
-  const [displayCreatePost, setDisplayCreatePost] = useState(false);
+  const [displayCreatePost, setDisplayCreatePost] = useState(false); // Whether to display the create post menu
 
+  // Toggles display post menu
   const handleDisplayCreatePostchange = () => {
     setDisplayCreatePost((prev) => !prev);
   };

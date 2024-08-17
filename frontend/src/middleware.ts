@@ -1,14 +1,35 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { checkAuth } from "./app/lib/ServerAuth";
+import { checkAuth, checkViewProfileAuth } from "./app/lib/ServerAuth";
 
 export async function middleware(request: NextRequest) {
   const protectedRoutes: Array<string> = ["/profile", "/feed"];
   const access_token = request.cookies.get("access_token")?.value;
-  const refresh_token = request.cookies.get("refresh_token")?.value;
+  const isLog = request.cookies.get("isLogged")?.value;
   const username = request.cookies.get("username")?.value;
   const response = NextResponse.next();
   let isLogged = false;
+
+  if (request.nextUrl.pathname.includes("/profile/view")) {
+    const match = request.nextUrl.pathname.match(/^\/profile\/view\/([^\/]+)$/);
+
+    if (match) {
+      const id = match[1];
+      const authStatus = await checkViewProfileAuth(access_token, isLog, id);
+
+      if (authStatus === 200) {
+        return NextResponse.next();
+      } else if (authStatus === 403) {
+        return NextResponse.redirect(new URL("/", request.url));
+      } else if (authStatus === 401) {
+        return NextResponse.rewrite(
+          new URL(`/loading?redirect=${request.nextUrl.pathname}`, request.url)
+        );
+      } else {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
+  }
 
   if (
     username &&

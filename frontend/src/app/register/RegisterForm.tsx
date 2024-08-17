@@ -18,15 +18,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const RegisterForm = () => {
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const router = useRouter();
+  const [fullName, setFullName] = useState(""); // Name input
+  const [username, setUsername] = useState(""); // Username input
+  const [email, setEmail] = useState(""); // Email input
+  const [password, setPassword] = useState(""); // Password input
+  const [passwordConfirm, setPasswordConfirm] = useState(""); // Password confirmation
+  const [showPassword, setShowPassword] = useState(false); // Whether to show passsword
+  const [showConfirm, setShowConfirm] = useState(false); // Whether to show confirm password
+  // Register errors
   const [registerErrors, setRegisterErrors] = useState({
     error1: "",
     error2: "",
@@ -34,8 +34,11 @@ const RegisterForm = () => {
     error4: "",
     error5: "",
   });
-  const router = useRouter();
+  // Url for the backend
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Attempts to register user account
   const register = () => {
     const err = registerErrors;
     if (!fullName || !username || !email || !password || !passwordConfirm) {

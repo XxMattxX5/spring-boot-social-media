@@ -20,9 +20,10 @@ const TimeAgo = dynamic(() => import("../components/TimeAgo"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Spring Social - Popular",
-  description: "...",
+  description: "View popular post on spring social",
 };
 
+// Gets popular posts
 const getPopularPosts = async (page: string) => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
 
@@ -62,12 +63,12 @@ const Popular = async ({
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) => {
-  const cookieStore = cookies();
-  const page = searchParams?.page || "1";
-  const postResponse: PostResponse = await getPopularPosts(page);
-  const postList = postResponse.postList;
-  const pageCount = postResponse.pageCount;
-  const theme = cookieStore.get("theme")?.value || "light";
+  const cookieStore = cookies(); // User's cookies
+  const page = searchParams?.page || "1"; // Page being viewed
+  const postResponse: PostResponse = await getPopularPosts(page); // Gets list of posts
+  const postList = postResponse.postList; // List of posts
+  const pageCount = postResponse.pageCount; // Number of pages
+  const theme = cookieStore.get("theme")?.value || "light"; // User's selected theme
 
   return (
     <Grid container>

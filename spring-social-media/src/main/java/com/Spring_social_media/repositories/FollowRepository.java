@@ -10,7 +10,6 @@ import com.Spring_social_media.models.Follow;
 import com.Spring_social_media.models.User;
 import com.Spring_social_media.projections.FollowersProjection;
 import com.Spring_social_media.projections.FollowingProjection;
-import com.Spring_social_media.projections.PostProjection;
 
 import java.util.List;
 import java.util.Optional;

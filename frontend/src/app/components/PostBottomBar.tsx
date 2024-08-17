@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Button, Tooltip } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -16,19 +16,21 @@ type Props = {
 };
 
 const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
-  const [cookies, setCookies] = useCookies(["isLogged"]);
-  const isLogged = cookies.isLogged == true ? true : false;
   const { refresh } = useAuth();
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes);
-  const [isFollowed, setIsFollowed] = useState(false);
-  const [showNewCommentInput, setShowNewCommentInput] = useState(false);
+  const [cookies, setCookies] = useCookies(["isLogged"]); // User's cookies
+  const isLogged = cookies.isLogged == true ? true : false; // User's login status
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080"; // Url for the backend
+  const [isLiked, setIsLiked] = useState(false); // Whether user has liked post already or not
+  const [likeCount, setLikeCount] = useState(likes); // Number of likes on post
+  const [isFollowed, setIsFollowed] = useState(false); // Whether user is already following or not
+  const [showNewCommentInput, setShowNewCommentInput] = useState(false); // Display input box for new comment
 
+  // Toggles showNewCommentInput display
   const handleShowNewCommentInput = () => {
     setShowNewCommentInput((prev) => !prev);
   };
 
+  // Gets information on post on mount
   useEffect(() => {
     const postInfo = async () => {
       let status = null;
@@ -40,7 +42,6 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
           if (res.ok) {
             status = true;
             return res.json();
-            // } else if (res.status == 401 || res.status == 403) {
           } else if (res.status == 401) {
             status = false;
           }
@@ -53,6 +54,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
         })
         .catch((error) => console.log(error));
 
+      // Refreshes token and tries again if error is a 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed == true) {
@@ -63,6 +65,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
     postInfo();
   }, [backendUrl, postId, refresh]);
 
+  // Likes the posts
   const likePost = async () => {
     let status = null;
     await fetch(`${backendUrl}/like/${postId}`, {
@@ -74,13 +77,13 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
           status = true;
           setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
           setIsLiked((prev) => !prev);
-          // } else if (res.status == 401 || res.status == 403) {
         } else if (res.status == 401) {
           status = false;
         }
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error is a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed == true) {
@@ -89,6 +92,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
     }
   };
 
+  // Follows the user who made the post
   const follow = async () => {
     let status = null;
 
@@ -117,6 +121,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed == true) {

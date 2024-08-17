@@ -18,6 +18,7 @@ public class BlockService {
         this.followService = followService;
     }
 
+    // Blocks user and removes follow if there is one
     public void blockUser(User blocking, User blocked) {
         if (blockRepository.findByBlockingAndBlocked(blocking, blocked).isPresent()) {
             return;
@@ -34,6 +35,7 @@ public class BlockService {
         blockRepository.save(newBlock);
     }
 
+    // Checks if user is blocked
     public boolean isBlocked(User blocking, User blocked) {
         return blockRepository.findByBlockingAndBlocked(blocking, blocked).isPresent();
     }

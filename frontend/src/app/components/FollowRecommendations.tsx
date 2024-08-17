@@ -12,15 +12,18 @@ type Recommendation = {
 
 const FollowRecommendations = () => {
   const { settings, refresh } = useAuth();
-  const theme = settings?.colorTheme || "light";
+  const theme = settings?.colorTheme || "light"; // User's selected theem
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]); // List of follow recommendations
 
+  // Removes recommendation if user follows them
   const removeRecommendation = (userId: number) => {
     setRecommendations(recommendations.filter((item) => item.id !== userId));
   };
 
+  // Gets list of recommendations
   useEffect(() => {
     const getRecommendations = async () => {
       let status = null;
@@ -44,6 +47,7 @@ const FollowRecommendations = () => {
           }
         });
 
+      // Refreshes token and tries again if error was 401
       if (status == false) {
         const refreshed = await refresh();
         if (refreshed) {
@@ -54,6 +58,7 @@ const FollowRecommendations = () => {
     getRecommendations();
   }, [backendUrl]);
 
+  // Follows user
   const follow = async (userId: number) => {
     let status = null;
 
@@ -80,6 +85,7 @@ const FollowRecommendations = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed == true) {

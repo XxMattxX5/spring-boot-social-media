@@ -1,7 +1,5 @@
 package com.Spring_social_media.projections;
 
-import com.Spring_social_media.models.User;
-
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;

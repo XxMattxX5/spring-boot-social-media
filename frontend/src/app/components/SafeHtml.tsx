@@ -5,6 +5,7 @@ type SafeHtmlProps = {
   html: string;
 };
 
+// Santize html for server components
 export const SafeHtmlServer = async ({ html }: SafeHtmlProps) => {
   let sanitizedHtml;
 
@@ -20,6 +21,7 @@ export const SafeHtmlServer = async ({ html }: SafeHtmlProps) => {
   return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
 };
 
+// Santizes html for client components
 export const SafeHtmlClient = ({ html }: SafeHtmlProps) => {
   let sanitizedHtml;
 

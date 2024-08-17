@@ -1,8 +1,8 @@
 "use server";
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import { cookies } from "next/headers";
 
+// Clears cookies for user
 export const clearCredentials = (response: NextResponse) => {
   response.cookies.set("access_token", "", {
     path: "/",
@@ -26,6 +26,7 @@ export const clearCredentials = (response: NextResponse) => {
   });
 };
 
+// Sets cookies for user
 export const setCredentials = (
   response: NextResponse,
   request: NextRequest,
@@ -73,6 +74,7 @@ export const setCredentials = (
   });
 };
 
+// Checks user's access token
 export const checkAuth = (token: string) => {
   const decode = jwtDecode(token).exp;
   if (decode && new Date(decode * 1000) > new Date()) {
@@ -82,47 +84,82 @@ export const checkAuth = (token: string) => {
   }
 };
 
-export const refreshToken = async (
-  response: NextResponse,
-  request: NextRequest
+// export const refreshToken = async (
+//   response: NextResponse,
+//   request: NextRequest
+// ) => {
+//   const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
+//   const deviceId = request.cookies.get("deviceId")?.value;
+//   const refresh_token = request.cookies.get("refresh_token")?.value;
+//   let refreshed = false;
+
+//   await fetch(`${backendUrl}/auth/refresh`, {
+//     headers: {
+//       Accept: "application/json",
+//       Cookie: `refresh_token=${refresh_token};deviceId=${deviceId}`,
+//     },
+//     method: "POST",
+//   })
+//     .then((res) => {
+//       if (res.ok) {
+//         return res.json();
+//       } else {
+//         throw new Error("Token not valid");
+//       }
+//     })
+//     .then((data) => {
+//       if (data) {
+//         setCredentials(
+//           response,
+//           request,
+//           data.username,
+//           data.token,
+//           data.refreshToken,
+//           new Date(Date.now() + data.expiresIn),
+//           new Date(data.refreshExpiryDate),
+//           data.profilePicture
+//         );
+//         refreshed = true;
+//       }
+//     })
+//     .catch((error) => {
+//       console.log("Error refreshing tokens: " + error);
+//       refreshed = false;
+//     });
+//   return refreshed;
+// };
+
+// Checks if user is allowed to view user profile
+export const checkViewProfileAuth = async (
+  access_token: string | undefined,
+  isLogged: string | undefined,
+  id: string
 ) => {
   const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
-  const deviceId = request.cookies.get("deviceId")?.value;
-  const refresh_token = request.cookies.get("refresh_token")?.value;
-  let refreshed = false;
+  let cookieString = access_token ? `access_token=${access_token};` : undefined;
 
-  await fetch(`${backendUrl}/auth/refresh`, {
-    headers: {
-      Accept: "application/json",
-      Cookie: `refresh_token=${refresh_token};deviceId=${deviceId}`,
-    },
-    method: "POST",
+  isLogged
+    ? cookieString
+      ? (cookieString += `isLogged=${isLogged}`)
+      : (cookieString = `isLogged=${isLogged}`)
+    : null;
+
+  const headers = cookieString
+    ? {
+        Cookie: cookieString,
+      }
+    : undefined;
+
+  return fetch(`${backendUrl}/user/viewProfile/${id}`, {
+    method: "GET",
+    headers: headers,
   })
     .then((res) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        throw new Error("Token not valid");
-      }
+      return res.status;
     })
-    .then((data) => {
-      if (data) {
-        setCredentials(
-          response,
-          request,
-          data.username,
-          data.token,
-          data.refreshToken,
-          new Date(Date.now() + data.expiresIn),
-          new Date(data.refreshExpiryDate),
-          data.profilePicture
-        );
-        refreshed = true;
-      }
-    })
+
     .catch((error) => {
-      console.log("Error refreshing tokens: " + error);
-      refreshed = false;
+      console.log(error);
+      return 403;
     });
-  return refreshed;
 };

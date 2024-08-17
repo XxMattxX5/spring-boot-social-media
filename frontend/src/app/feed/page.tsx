@@ -32,7 +32,7 @@ const PopularPosts = dynamic(() => import("../components/PopularPosts"), {
 
 export const metadata: Metadata = {
   title: "Spring Social - Feed",
-  description: "...",
+  description: "View your post and posts of those you have followed",
 };
 
 type Post = {
@@ -50,15 +50,16 @@ type PostResponse = {
   pageCount: number;
 };
 
+// Gets a list of posts
 async function getPosts(
   page?: string,
   search?: string,
   type?: string,
   sort?: string
 ) {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
-  const cookieStore = cookies();
-  const access_token = cookieStore.get("access_token")?.value;
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080"; // Url for the backend
+  const cookieStore = cookies(); // User's cookies
+  const access_token = cookieStore.get("access_token")?.value; // User's access cookie
 
   const response = await fetch(
     `${backendUrl}/post/followed?page=${page}&search=${search}&type=${type}&sort=${sort}`,
@@ -86,15 +87,15 @@ export default async function Feed({
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) {
-  const page = searchParams?.page || "1";
-  const search = searchParams?.search || "";
-  const type = searchParams?.type || "post";
-  const sort = searchParams?.sort || "createdAtDesc";
-  const postResponse: PostResponse = await getPosts(page, search, type, sort);
-  const posts = postResponse.postList;
-  const pageCount = postResponse.pageCount;
-  const cookieStore = cookies();
-  const theme = cookieStore.get("theme")?.value || "light";
+  const page = searchParams?.page || "1"; // Page being viewed
+  const search = searchParams?.search || ""; // Term to be searched
+  const type = searchParams?.type || "post"; // Field to be searched
+  const sort = searchParams?.sort || "createdAtDesc"; // Sort Order
+  const postResponse: PostResponse = await getPosts(page, search, type, sort); // Gets a list of posts
+  const posts = postResponse.postList; // List of posts
+  const pageCount = postResponse.pageCount; // Number of pages
+  const cookieStore = cookies(); // User's cookies
+  const theme = cookieStore.get("theme")?.value || "light"; // User's selected theme
 
   return (
     <Grid container id="feed_container">

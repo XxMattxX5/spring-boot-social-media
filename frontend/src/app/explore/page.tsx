@@ -29,7 +29,8 @@ const PopularPosts = dynamic(() => import("../components/PopularPosts"), {
 
 export const metadata: Metadata = {
   title: "Spring Social - Explore",
-  description: "...",
+  description:
+    "Explore new created post, popular posts, and get follow recommendations",
 };
 
 type Post = {
@@ -46,14 +47,14 @@ type PostResponse = {
   pageCount: number;
 };
 
+// Gest list of posts
 async function getPosts(
   page?: string,
   search?: string,
   type?: string,
   sort?: string
 ) {
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
-
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080"; // Url for backend
   const response = await fetch(
     `${backendUrl}/post/all?page=${page}&search=${search}&type=${type}&sort=${sort}`,
     {
@@ -79,15 +80,15 @@ export default async function Explore({
   params: { slug: string };
   searchParams?: { [key: string]: string | undefined };
 }) {
-  const page = searchParams?.page || "1";
-  const search = searchParams?.search || "";
-  const type = searchParams?.type || "post";
-  const sort = searchParams?.sort || "createdAtDesc";
-  const postResponse: PostResponse = await getPosts(page, search, type, sort);
-  const pageCount = postResponse.pageCount;
-  const posts = postResponse.postList;
-  const cookieStore = cookies();
-  const theme = cookieStore.get("theme")?.value || "light";
+  const page = searchParams?.page || "1"; // View to be viewed
+  const search = searchParams?.search || ""; // Term to be searched
+  const type = searchParams?.type || "post"; // field to be searched
+  const sort = searchParams?.sort || "createdAtDesc"; // Sort order
+  const postResponse: PostResponse = await getPosts(page, search, type, sort); // Gets a list of posts
+  const pageCount = postResponse.pageCount; // Number of pages
+  const posts = postResponse.postList; // List of posts
+  const cookieStore = cookies(); // User's cookies
+  const theme = cookieStore.get("theme")?.value || "light"; // "User's selected theme"
 
   return (
     <Grid container id="explore_container">

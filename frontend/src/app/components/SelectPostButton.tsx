@@ -13,15 +13,16 @@ type Post = {
   userId: number;
 };
 
-interface SelectButtonProps {
+type SelectButtonProps = {
   post: Post;
   children: React.ReactNode;
   style?: CSSProperties;
-}
+};
 
 const SelectPostButton = ({ post, children, style }: SelectButtonProps) => {
-  const [displayPost, setDisplayPost] = useState(false);
+  const [displayPost, setDisplayPost] = useState(false); // Whether to display the post
 
+  // Sets display post to false
   const clearPost = () => {
     setDisplayPost(false);
   };

@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.config.Customizer;
 
 
 import java.util.List;
@@ -42,7 +41,19 @@ public class SecurityConfiguration {
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/auth/**", "/post/popular", "/post/all", "/post/post_info/{id}", "/error", "/comment/comments/{id}", "/follow/recommendations").permitAll()
+        .requestMatchers(
+        "/auth/**", 
+        "/post/popular", 
+        "/post/all", 
+        "/post/post_info/{id}", 
+        "/error", 
+        "/comment/comments/{id}", 
+        "/follow/recommendations", 
+        "/user/viewProfile/{id}",
+        "/user/get_posts/{id}",
+        "/user/get_following/{id}",
+        "/user/get_followers/{id}"
+        ).permitAll()
             .anyRequest().authenticated()
         )
         .exceptionHandling(e->e.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))

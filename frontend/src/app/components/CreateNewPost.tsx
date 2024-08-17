@@ -21,14 +21,17 @@ type Props = {
 
 const CreateNewPost = ({ displayMenuClose }: Props) => {
   const router = useRouter();
-  const [blockScroll, allowScroll] = useScrollBlock();
+  const [blockScroll, allowScroll] = useScrollBlock(); // Used to allow or block scroll
   const { settings, refresh } = useAuth();
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const theme = settings?.colorTheme || "light";
-  const [content, setContent] = useState<string>("");
-  const [postError, setPostError] = useState("");
 
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const [content, setContent] = useState<string>(""); // Content for new post
+  const [postError, setPostError] = useState(""); // Error for post creation
+
+  // Blocks scroll when mounted and allows scroll when unmounted
   useEffect(() => {
     blockScroll();
     return () => {
@@ -36,6 +39,7 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
     };
   }, [blockScroll, allowScroll]);
 
+  // Creates a new post if content isn't empty
   const createPost = async () => {
     if (!content) {
       setPostError("Post content cannot be empty");
@@ -59,7 +63,6 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
           status = true;
           router.refresh();
           displayMenuClose();
-          // } else if (res.status === 401 || res.status === 403) {
         } else if (res.status === 401) {
           status = false;
         } else {
@@ -67,6 +70,7 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was 401
     if (status == false) {
       const refreshStatus = await refresh();
       if (refreshStatus) {
@@ -77,6 +81,7 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
     }
   };
 
+  // Handles changes to the new post comment
   const handleContentChange = (content: string) => {
     setContent(content);
   };

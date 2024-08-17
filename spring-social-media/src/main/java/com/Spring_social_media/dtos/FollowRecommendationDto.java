@@ -5,14 +5,12 @@ public class FollowRecommendationDto {
     private String username;
     private String profilePicture;
 
-    // Constructor
     public FollowRecommendationDto(Integer id, String username, String profilePicture) {
         this.id = id;
         this.username = username;
         this.profilePicture = profilePicture;
     }
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }

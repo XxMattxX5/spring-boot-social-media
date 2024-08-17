@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, Suspense, useCallback } from "react";
-import { Button, Grid, TextField, Typography, IconButton } from "@mui/material";
+import { Button, Grid, Typography, IconButton } from "@mui/material";
 import styles from "../styles/comments.module.css";
 import TimeAgo from "./TimeAgo";
 import { SafeHtmlClient } from "./SafeHtml";
@@ -38,10 +38,12 @@ const Comments = ({
   showNewCommentCallBack,
   postId,
 }: Props) => {
-  const { refresh, settings } = useAuth();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
+  const { refresh } = useAuth();
+  const [comments, setComments] = useState<Comment[]>([]); // List of comments for post
+  const [currentPage, setCurrentPage] = useState(1); // Current page in comments
+  const [pageCount, setPageCount] = useState(0); // Number of pages of comments
+
+  // Page button numbers
   const pages = () => {
     const pagesArray: number[] = [];
     currentPage - 2 > 1 ? pagesArray.push(currentPage - 2) : null;
@@ -52,19 +54,24 @@ const Comments = ({
 
     return pagesArray;
   };
+  // Url for backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const [newComment, setNewComment] = useState("");
-  const [newReply, setNewReply] = useState("");
-  const [visibleReply, setVisibleReply] = useState<number | null>(null);
+  const [newComment, setNewComment] = useState(""); // New comment content
+  const [newReply, setNewReply] = useState(""); // New reply content
+  const [visibleReply, setVisibleReply] = useState<number | null>(null); // What reply box is visible
 
+  // Handles changes to comment content
   const handleCommentContentChange = (content: string) => {
     setNewComment(content);
   };
+
+  // Handles changes to reply content
   const handleReplyContentChange = (content: string) => {
     setNewReply(content);
   };
 
+  // Displays reply box for selected comment
   const handleReplyClick = (commentId: number) => {
     if (visibleReply == commentId) {
       setVisibleReply(null);
@@ -74,7 +81,11 @@ const Comments = ({
     }
   };
 
+  // Creates a new comment
   const createComment = async () => {
+    if (!newComment) {
+      return;
+    }
     let status = null;
     await fetch(`${backendUrl}/comment/create/${postId}`, {
       headers: {
@@ -92,13 +103,13 @@ const Comments = ({
           showNewCommentCallBack();
           fetchComments();
           setNewComment("");
-          // } else if (res.status == 401 || res.status == 403) {
         } else if (res.status == 401) {
           status = false;
         }
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed == true) {
@@ -107,7 +118,11 @@ const Comments = ({
     }
   };
 
+  // Creates a new reply
   const createReply = async (commentId: number) => {
+    if (!newReply) {
+      return;
+    }
     let status = null;
     await fetch(`${backendUrl}/reply/create/${commentId}`, {
       headers: {
@@ -125,13 +140,13 @@ const Comments = ({
           fetchComments();
           setNewReply("");
           setVisibleReply(null);
-          // } else if (res.status == 401 || res.status == 403) {
         } else if (res.status == 401) {
           status = false;
         }
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed == true) {
@@ -140,6 +155,7 @@ const Comments = ({
     }
   };
 
+  // Fetchs comment for post
   const fetchComments = useCallback(async () => {
     fetch(`${backendUrl}/comment/comments/${postId}?page=${currentPage}`, {
       method: "GET",
@@ -161,10 +177,12 @@ const Comments = ({
       .catch((error) => console.log(error));
   }, [backendUrl, currentPage]);
 
+  // Fetches comments on load
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
 
+  // Handles change to the current page
   const handlePageChange = (page: number) => {
     if (currentPage === page || page < 1 || page > pageCount) {
       return;

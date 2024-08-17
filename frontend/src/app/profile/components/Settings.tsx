@@ -14,37 +14,43 @@ import { useRouter } from "next/navigation";
 
 const Settings = () => {
   const router = useRouter();
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const { settings, fetchUser, refresh } = useAuth();
-  const theme = settings?.colorTheme || "light";
-  const [allowFollows, setAllowFollows] = useState(settings?.allowFollows);
-
-  const [colorTheme, setColorTheme] = useState(settings?.colorTheme);
+  const theme = settings?.colorTheme || "light"; // User's selected theme
+  const [allowFollows, setAllowFollows] = useState(settings?.allowFollows); // Allows following setting
+  const [colorTheme, setColorTheme] = useState(settings?.colorTheme); // Color theme setting
+  // Profile visibility setting
   const [profileVisibility, setProfileVisibility] = useState(
     settings?.profileVisibility
   );
+  // Url for the backend
+  const backendUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
+  // Handles changes to the allow follows setting
   const handleAllowFollowsChange = (e: SelectChangeEvent) => {
     setAllowFollows(e.target.value);
   };
 
+  // Handles changes to the color theme setting
   const handleColorThemeChange = (e: SelectChangeEvent) => {
     setColorTheme(e.target.value);
   };
 
+  // Handles changes to the profile visibilty setting
   const handleProfileVisiblityChange = (e: SelectChangeEvent) => {
     setProfileVisibility(e.target.value);
   };
 
+  // Resets all settings to default
   const ResetSettings = () => {
     if (confirm("Are you sure you want to reset your settings?")) {
       setAllowFollows("yes");
       setProfileVisibility("everyone");
-      setColorTheme("light");
+      setColorTheme("dark");
     }
   };
 
+  // Updates user's settings
   const updateSettings = useCallback(async () => {
     let status = null;
     const headers = {
@@ -73,6 +79,7 @@ const Settings = () => {
       })
       .catch((error) => console.log(error));
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {
@@ -88,6 +95,7 @@ const Settings = () => {
     refresh,
   ]);
 
+  // Handles updating settings
   useEffect(() => {
     if (
       allowFollows != settings?.allowFollows ||

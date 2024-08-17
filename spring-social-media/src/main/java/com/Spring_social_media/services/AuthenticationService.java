@@ -1,7 +1,5 @@
 package com.Spring_social_media.services;
 
-import com.Spring_social_media.services.JwtService;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -10,7 +8,6 @@ import com.Spring_social_media.repositories.SettingsRepository;
 import com.Spring_social_media.repositories.UserRepository;
 import com.Spring_social_media.responses.RegisterResponse;
 import com.Spring_social_media.dtos.RegisterUserDto;
-import com.Spring_social_media.dtos.CheckAuthDto;
 import com.Spring_social_media.dtos.LoginUserDto;
 import com.Spring_social_media.models.RefreshToken;
 import com.Spring_social_media.models.User;
@@ -26,13 +23,9 @@ import java.util.regex.Matcher;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
-    
     private final PasswordEncoder passwordEncoder;
-    
     private final AuthenticationManager authenticationManager;
-
     private final JwtService jwtService;
-
     private final SettingsRepository settingsRepository;
 
     public AuthenticationService(
@@ -49,6 +42,7 @@ public class AuthenticationService {
         this.settingsRepository = settingsRepository;
     }
 
+    // Creates a new user
     public User signup(RegisterUserDto input) {
         User user = new User();
     
@@ -64,6 +58,7 @@ public class AuthenticationService {
         return savedUser;
     }
 
+    // Validates register input
     public RegisterResponse signupValidation(RegisterUserDto input) {
         RegisterResponse regResponse = new RegisterResponse();
        
@@ -106,6 +101,7 @@ public class AuthenticationService {
         return regResponse;
     }
 
+    // Authenicates user
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -118,6 +114,7 @@ public class AuthenticationService {
                 .orElseThrow();
     }
 
+    // Checks user's access token
     public boolean checkToken(String input) {
         try {
             String username = jwtService.extractUsername(input);

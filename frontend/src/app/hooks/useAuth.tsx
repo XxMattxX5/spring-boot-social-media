@@ -34,23 +34,25 @@ type Props = { children: React.ReactNode };
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: Props) => {
-  const pathname = usePathname();
+  // Url for the backend
   const backendUrl =
     process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-  const [cookies, setCookies] = useCookies(["isLogged", "username"]);
+  const [cookies, setCookies] = useCookies(["isLogged", "username"]); // User's cookies
+  // Gets User's info from localstorage
   const userInfo =
     typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  // Gets User's setting info from localstorage
   const settingsInfo =
     typeof window !== "undefined" ? localStorage.getItem("settings") : null;
-  const [user, setUser] = useState(userInfo ? JSON.parse(userInfo) : null);
+  const [user, setUser] = useState(userInfo ? JSON.parse(userInfo) : null); // User's info
+  // User's setting info
   const [settings, setSettings] = useState(
     settingsInfo ? JSON.parse(settingsInfo) : null
   );
 
-  let refreshPromise: Promise<boolean | null> | null = null;
+  let refreshPromise: Promise<boolean | null> | null = null; // Holds refresh token promise
 
-  const router = useRouter();
-
+  // Fetchs user's info and settings
   const fetchUser = async () => {
     let status = null;
     const headers = {
@@ -82,6 +84,7 @@ export const AuthProvider = ({ children }: Props) => {
         console.log(error);
       });
 
+    // Refreshes token and tries again if error was a 401
     if (status == false) {
       const refreshed = await refresh();
       if (refreshed) {
@@ -90,6 +93,7 @@ export const AuthProvider = ({ children }: Props) => {
     }
   };
 
+  // Attempts to login in user giving username,password, and device id
   const login = async (
     username: string,
     password: string,
@@ -126,6 +130,7 @@ export const AuthProvider = ({ children }: Props) => {
     return message;
   };
 
+  // Logs out user
   const logout = async () => {
     setUser(null);
     setSettings(null);
@@ -139,13 +144,12 @@ export const AuthProvider = ({ children }: Props) => {
       .catch((error) => console.log(error));
   };
 
+  // Attempts to refresh user's access token and refresh token
   const refresh = async () => {
     if (refreshPromise) {
-      // console.log("Already Refreshing!");
       return await refreshPromise;
     }
 
-    // console.log("REFRESHING TOKEN!");
     refreshPromise = fetch(`${backendUrl}/auth/refresh`, {
       headers: {
         Accept: "application/json",
@@ -173,6 +177,7 @@ export const AuthProvider = ({ children }: Props) => {
     return await refreshPromise;
   };
 
+  // Changes body color based on theme and logouts out user or fetches necessary date based on login status
   useEffect(() => {
     if (
       typeof window !== "undefined" &&

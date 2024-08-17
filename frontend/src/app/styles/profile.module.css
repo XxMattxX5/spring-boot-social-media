@@ -300,7 +300,6 @@
   column-gap: 20px;
 }
 .settings_option_box {
-  /* width: 47%; */
   flex-grow: 1;
   flex-basis: 600px;
 }
