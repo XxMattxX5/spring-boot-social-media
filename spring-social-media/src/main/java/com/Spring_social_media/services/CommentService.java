@@ -47,7 +47,7 @@ public class CommentService {
 
         Sort.Direction direction = Sort.Direction.DESC;
 
-        Pageable pageable = PageRequest.of(page - 1, 1, Sort.by(direction, "createdAt"));
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(direction, "createdAt"));
 
         return commentRepository.findCommentsWithRepliesByPost(post, pageable);
     }

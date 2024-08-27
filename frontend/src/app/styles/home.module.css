@@ -1,0 +1,39 @@
+#home_container {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-height: 80vh;
+}
+#home_popular_posts_container {
+  flex-grow: 1;
+  max-width: 500px;
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+}
+#home_box {
+  flex-grow: 8;
+  padding: 0px 20px;
+  align-self: center;
+}
+#home_box_header {
+  text-align: center;
+}
+#home_box_header h1 {
+  color: #00abf7;
+  font-size: clamp(28px, 8vw, 60px);
+}
+#home_box_welcome_message {
+  margin-top: 15px;
+}
+#home_box_welcome_message p {
+  font-size: clamp(15px, 3vw, 35px);
+  text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+  #home_popular_posts_container {
+    display: none;
+  }
+}

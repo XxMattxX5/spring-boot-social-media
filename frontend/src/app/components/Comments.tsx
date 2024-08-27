@@ -43,7 +43,7 @@ const Comments = ({
   const [currentPage, setCurrentPage] = useState(1); // Current page in comments
   const [pageCount, setPageCount] = useState(0); // Number of pages of comments
 
-  // Page button numbers
+  // A list of valid page numbers for navigation comments
   const pages = () => {
     const pagesArray: number[] = [];
     currentPage - 2 > 1 ? pagesArray.push(currentPage - 2) : null;
@@ -61,17 +61,18 @@ const Comments = ({
   const [newReply, setNewReply] = useState(""); // New reply content
   const [visibleReply, setVisibleReply] = useState<number | null>(null); // What reply box is visible
 
-  // Handles changes to comment content
+  // Sets the updated content to the newComment state variable
   const handleCommentContentChange = (content: string) => {
     setNewComment(content);
   };
 
-  // Handles changes to reply content
+  // Sets the updated reply content to the newReply variable
   const handleReplyContentChange = (content: string) => {
     setNewReply(content);
   };
 
-  // Displays reply box for selected comment
+  // Sets id of the comment that the reply box should be visible on to the visibleReply variable
+  // Sets visibleReply variable to null if comment id matches the visibleReply id
   const handleReplyClick = (commentId: number) => {
     if (visibleReply == commentId) {
       setVisibleReply(null);
@@ -81,7 +82,7 @@ const Comments = ({
     }
   };
 
-  // Creates a new comment
+  // Attempts to make a new comment if the newComment variable is not empty
   const createComment = async () => {
     if (!newComment) {
       return;
@@ -118,7 +119,7 @@ const Comments = ({
     }
   };
 
-  // Creates a new reply
+  // Attempts to create a new reply if the newReply variable isn't empty
   const createReply = async (commentId: number) => {
     if (!newReply) {
       return;
@@ -155,7 +156,7 @@ const Comments = ({
     }
   };
 
-  // Fetchs comment for post
+  // Attempts the fetch the comments for the post giving a postId and page
   const fetchComments = useCallback(async () => {
     fetch(`${backendUrl}/comment/comments/${postId}?page=${currentPage}`, {
       method: "GET",
@@ -175,14 +176,14 @@ const Comments = ({
         }
       })
       .catch((error) => console.log(error));
-  }, [backendUrl, currentPage]);
+  }, [backendUrl, currentPage, postId]);
 
-  // Fetches comments on load
+  // Fetches comments on mount
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
 
-  // Handles change to the current page
+  // Changes the current page number if the page input is valid
   const handlePageChange = (page: number) => {
     if (currentPage === page || page < 1 || page > pageCount) {
       return;
@@ -222,6 +223,7 @@ const Comments = ({
                 src={comment.profilePicture}
                 height={40}
                 width={40}
+                alt={`${comment.username}'s profile picture`}
               />
 
               <Grid item className={styles.comment_info}>
@@ -292,6 +294,7 @@ const Comments = ({
                       src={reply.profilePicture}
                       height={40}
                       width={40}
+                      alt={`${reply.username}'s profile picture`}
                     />
 
                     <Grid item className={styles.comment_info}>

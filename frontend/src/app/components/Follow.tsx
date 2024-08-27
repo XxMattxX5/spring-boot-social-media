@@ -38,7 +38,7 @@ const Follow = ({ type }: Props) => {
     setFollowSearch(e.target.value);
   };
 
-  // Sets the currents search to the follow search
+  // Sets the currentFollowSearch to followSearch and resets the results back to page 1
   const handleSetCurrentSearch = () => {
     setCurrentSearch(followSearch);
     setCurrentPage(1);
@@ -95,7 +95,7 @@ const Follow = ({ type }: Props) => {
     return () => {
       controller.abort();
     };
-  }, [currentSearch, currentPage, backendUrl, type]);
+  }, [currentSearch, currentPage, backendUrl, type, refresh]);
 
   return (
     <Grid container id={styles.following_container}>
@@ -155,7 +155,7 @@ const Follow = ({ type }: Props) => {
                       width={40}
                       height={40}
                       className={styles.following_follow_image}
-                      alt={"Profile Picture"}
+                      alt={`${follow.followUsername}'s profile picture`}
                     />
                     <Grid item>
                       <Typography

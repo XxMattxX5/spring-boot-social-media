@@ -30,10 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
-
-
-
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
@@ -93,10 +89,11 @@ public class AuthenticationController {
 
     // Logs user out by delete credential cookies
     @DeleteMapping("/logout")
-    public String logoutUser(HttpServletResponse response) {
+    public void logoutUser(HttpServletResponse response) {
 
         response = authenticationService.clearCredentials(response);
-        return "Logout Successful";
+        response.setStatus(200);
+        return;
     }
     
     // Checks if token is still valid
@@ -114,7 +111,6 @@ public class AuthenticationController {
     // Refreshes access and refresh token if the refresh token is valid
     @PostMapping("/refresh")
     public @ResponseBody String refreshToken(HttpServletResponse response, @CookieValue String refresh_token, @CookieValue String deviceId){
-        System.out.println("Refreshing");
         try {
             // Verifies that refresh_token is valid
             RefreshToken refreshToken = refreshTokenService.findByTokenAndDeviceId(refresh_token, deviceId);

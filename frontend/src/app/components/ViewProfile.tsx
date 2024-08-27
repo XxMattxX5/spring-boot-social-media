@@ -107,7 +107,7 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [followersCurrentSearch, followersPage, params.id]);
+  }, [followersCurrentSearch, followersPage, params.id, backendUrl, refresh]);
 
   // Gets following on mount and when page or search changes
   useEffect(() => {
@@ -160,7 +160,7 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [followingCurrentSearch, followingPage, params.id]);
+  }, [followingCurrentSearch, followingPage, params.id, backendUrl, refresh]);
 
   // Gets posts on mount and when page changes
   useEffect(() => {
@@ -207,7 +207,7 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [currentPostPage, params.id]);
+  }, [currentPostPage, params.id, backendUrl, refresh]);
 
   // Handles changes to the current followers and current following search
   const handleSearchChange = (type: "followers" | "following") => {
@@ -310,6 +310,7 @@ const ViewProfile = () => {
                           height={50}
                           width={50}
                           className={styles.viewprofile_follow_user_img}
+                          alt={`${follow.followUsername}'s profile picture`}
                         />
                         <Typography
                           className={styles.viewprofile_follow_user_username}
@@ -396,6 +397,7 @@ const ViewProfile = () => {
                           height={50}
                           width={50}
                           className={styles.viewprofile_follow_user_img}
+                          alt={`${follow.followUsername}'s profile picture`}
                         />
                         <Typography
                           className={styles.viewprofile_follow_user_username}
@@ -464,6 +466,7 @@ const ViewProfile = () => {
                             height={50}
                             width={50}
                             className={styles.viewprofile_post_header_image}
+                            alt={`${post.username}'s profile picture`}
                           />
                           <Grid
                             item

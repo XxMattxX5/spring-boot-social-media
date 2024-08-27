@@ -45,6 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final Cookie[] cookies = request.getCookies();
         String access_cookie = null;
 
+        if ("/auth/logout".equals(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (cookies == null) {
             filterChain.doFilter(request, response);
             return;
@@ -66,12 +71,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = access_cookie;
             final String userEmail = jwtService.extractUsername(jwt);
             
-
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
+                
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,

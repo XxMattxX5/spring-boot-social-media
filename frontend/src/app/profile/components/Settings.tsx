@@ -93,6 +93,7 @@ const Settings = () => {
     allowFollows,
     profileVisibility,
     refresh,
+    router,
   ]);
 
   // Handles updating settings

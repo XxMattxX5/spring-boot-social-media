@@ -57,7 +57,7 @@ const FollowRecommendations = () => {
       }
     };
     getRecommendations();
-  }, [backendUrl]);
+  }, [backendUrl, refresh]);
 
   // Follows user
   const follow = async (userId: number) => {
@@ -114,6 +114,7 @@ const FollowRecommendations = () => {
                   height={50}
                   width={50}
                   className={styles.followrec_box_info_img}
+                  alt={`${rec.username}'s profile picture`}
                 />
                 <Typography>
                   <Link href={`/profile/view/${rec.id}`}>{rec.username}</Link>

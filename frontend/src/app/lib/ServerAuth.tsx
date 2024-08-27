@@ -1,6 +1,6 @@
 "use server";
 import { NextRequest, NextResponse } from "next/server";
-import { jwtDecode } from "jwt-decode";
+import { jwtVerify } from "jose";
 
 // Clears cookies for user
 export const clearCredentials = (response: NextResponse) => {
@@ -75,59 +75,21 @@ export const setCredentials = (
 };
 
 // Checks user's access token
-export const checkAuth = (token: string) => {
-  const decode = jwtDecode(token).exp;
-  if (decode && new Date(decode * 1000) > new Date()) {
-    return true;
-  } else {
+export const checkAuth = async (token: string) => {
+  const jwtKey = process.env.JWT_SECRET;
+  try {
+    if (jwtKey) {
+      const decodedKey = Buffer.from(jwtKey, "base64");
+      await jwtVerify(token, decodedKey);
+      return true;
+    } else {
+      throw new Error("JWT secret not found");
+    }
+  } catch (error) {
+    console.log(error);
     return false;
   }
 };
-
-// export const refreshToken = async (
-//   response: NextResponse,
-//   request: NextRequest
-// ) => {
-//   const backendUrl = process.env.BACKEND_URL || "http://localhost:8080";
-//   const deviceId = request.cookies.get("deviceId")?.value;
-//   const refresh_token = request.cookies.get("refresh_token")?.value;
-//   let refreshed = false;
-
-//   await fetch(`${backendUrl}/auth/refresh`, {
-//     headers: {
-//       Accept: "application/json",
-//       Cookie: `refresh_token=${refresh_token};deviceId=${deviceId}`,
-//     },
-//     method: "POST",
-//   })
-//     .then((res) => {
-//       if (res.ok) {
-//         return res.json();
-//       } else {
-//         throw new Error("Token not valid");
-//       }
-//     })
-//     .then((data) => {
-//       if (data) {
-//         setCredentials(
-//           response,
-//           request,
-//           data.username,
-//           data.token,
-//           data.refreshToken,
-//           new Date(Date.now() + data.expiresIn),
-//           new Date(data.refreshExpiryDate),
-//           data.profilePicture
-//         );
-//         refreshed = true;
-//       }
-//     })
-//     .catch((error) => {
-//       console.log("Error refreshing tokens: " + error);
-//       refreshed = false;
-//     });
-//   return refreshed;
-// };
 
 // Checks if user is allowed to view user profile
 export const checkViewProfileAuth = async (

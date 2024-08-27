@@ -52,9 +52,8 @@ export async function middleware(request: NextRequest) {
   if (!protectedRoutes.includes(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
-
   if (access_token && protectedRoutes.includes(request.nextUrl.pathname)) {
-    isLogged = checkAuth(access_token);
+    isLogged = await checkAuth(access_token);
   }
 
   if (!isLogged && protectedRoutes.includes(request.nextUrl.pathname)) {
