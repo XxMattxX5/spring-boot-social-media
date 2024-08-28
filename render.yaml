@@ -18,8 +18,8 @@ services:
         value: ${JWT_EXPIRES}
       - key: REFRESH_EXPIRES
         value: ${REFRESH_EXPIRES}
-    ports:
-      - 8080
+    # ports:
+    #   - 8080
 
   - type: web
     name: frontend
@@ -38,8 +38,8 @@ services:
         value: ${BACKEND_URL}
       - key: JWT_SECRET
         value: ${JWT_SECRET}
-    ports:
-      - 80
+    # ports:
+    #   - 80
 
   # - type: database
   #   name: db
