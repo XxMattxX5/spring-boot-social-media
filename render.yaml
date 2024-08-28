@@ -7,7 +7,7 @@ services:
     startCommand: ./mvnw spring-boot:run
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://db:5432/socialdb
+        value: ${SPRING_DATASOURCE_URL}
       - key: SPRING_DATASOURCE_USERNAME
         value: ${SPRING_DATASOURCE_USERNAME}
       - key: SPRING_DATASOURCE_PASSWORD
@@ -41,14 +41,14 @@ services:
     ports:
       - 80
 
-  - type: database
-    name: db
-    databaseName: socialdb
-    user: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    sqlFiles: []
-    dockerImage: postgres
-    dockerImageVersion: latest
-    persistentDisk:
-      diskName: pgdata
-      sizeGB: 10
+  # - type: database
+  #   name: db
+  #   databaseName: socialdb
+  #   user: ${POSTGRES_USER}
+  #   password: ${POSTGRES_PASSWORD}
+  #   sqlFiles: []
+  #   dockerImage: postgres
+  #   dockerImageVersion: latest
+  #   persistentDisk:
+  #     diskName: pgdata
+  #     sizeGB: 10
