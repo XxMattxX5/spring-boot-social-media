@@ -13,11 +13,11 @@ import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrow
 import ReactLoading from "react-loading";
 import { useAuth } from "../../hooks/useAuth";
 
-interface UserInfo {
-  name: string;
-  username: string;
-  email: string;
-}
+// interface UserInfo {
+//   name: string;
+//   username: string;
+//   email: string;
+// }
 
 const ProfileMenu = () => {
   const { settings, user } = useAuth();
@@ -25,8 +25,8 @@ const ProfileMenu = () => {
   const searchParams = useSearchParams();
   const displayedMenu = searchParams.get("menu") || "dashboard";
   const [showSideBar, setShowSideBar] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const currentMenuBackgroundColor = useState("white");
+  // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // const currentMenuBackgroundColor = useState("white");
 
   useEffect(() => {
     setShowSideBar(false);
@@ -72,9 +72,6 @@ const ProfileMenu = () => {
         id={styles.profile_current_nav_menu}
         sx={{
           backgroundColor: theme == "dark" ? "#333333 !important" : "unset",
-
-          // ? "#eeeeee"
-          // : "white",
         }}
       >
         {displayedMenu === "dashboard" ? <Dashboard /> : null}

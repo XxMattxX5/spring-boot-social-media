@@ -54,9 +54,7 @@ const Comments = ({
 
     return pagesArray;
   };
-  // Url for backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+
   const [newComment, setNewComment] = useState(""); // New comment content
   const [newReply, setNewReply] = useState(""); // New reply content
   const [visibleReply, setVisibleReply] = useState<number | null>(null); // What reply box is visible
@@ -88,7 +86,7 @@ const Comments = ({
       return;
     }
     let status = null;
-    await fetch(`${backendUrl}/comment/create/${postId}`, {
+    await fetch(`/api/comment/create/${postId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -125,7 +123,7 @@ const Comments = ({
       return;
     }
     let status = null;
-    await fetch(`${backendUrl}/reply/create/${commentId}`, {
+    await fetch(`/api/reply/create/${commentId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -158,7 +156,7 @@ const Comments = ({
 
   // Attempts the fetch the comments for the post giving a postId and page
   const fetchComments = useCallback(async () => {
-    fetch(`${backendUrl}/comment/comments/${postId}?page=${currentPage}`, {
+    fetch(`/api/comment/comments/${postId}?page=${currentPage}`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -176,7 +174,7 @@ const Comments = ({
         }
       })
       .catch((error) => console.log(error));
-  }, [backendUrl, currentPage, postId]);
+  }, [currentPage, postId]);
 
   // Fetches comments on mount
   useEffect(() => {

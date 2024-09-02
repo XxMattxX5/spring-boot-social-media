@@ -113,7 +113,7 @@ const NavBar = () => {
           </Box>
           <Box id="nav_login_profile">
             {!username ? (
-              <Link id="nav_login_btn" href="/login">
+              <Link id="nav_login_btn" href="/login" onClick={handleUrlChange}>
                 Login
               </Link>
             ) : (

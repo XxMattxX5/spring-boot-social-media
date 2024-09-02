@@ -52,15 +52,11 @@ const ViewProfile = () => {
   const [postPages, setPostPages] = useState(0); // Number of post pages
   const [currentPostPage, setCurrentPostPage] = useState(1); // Current post page
 
-  // Url for backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-
   // Gets followers on mount and when page or search changes
   useEffect(() => {
     const controller = new AbortController();
     const getFollowers = async () => {
-      let url = `${backendUrl}/user/get_followers/${params.id}?page=${followersPage}`;
+      let url = `/api/user/get_followers/${params.id}?page=${followersPage}`;
 
       if (followersCurrentSearch) {
         url += `&search=${followersCurrentSearch}`;
@@ -107,13 +103,13 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [followersCurrentSearch, followersPage, params.id, backendUrl, refresh]);
+  }, [followersCurrentSearch, followersPage, params.id, refresh]);
 
   // Gets following on mount and when page or search changes
   useEffect(() => {
     const controller = new AbortController();
     const getFollowing = async () => {
-      let url = `${backendUrl}/user/get_following/${params.id}?page=${followingPage}`;
+      let url = `/api/user/get_following/${params.id}?page=${followingPage}`;
 
       if (followingCurrentSearch) {
         url += `&search=${followingCurrentSearch}`;
@@ -160,13 +156,13 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [followingCurrentSearch, followingPage, params.id, backendUrl, refresh]);
+  }, [followingCurrentSearch, followingPage, params.id, refresh]);
 
   // Gets posts on mount and when page changes
   useEffect(() => {
     const controller = new AbortController();
     const getPosts = async () => {
-      let url = `${backendUrl}/user/get_posts/${params.id}?page=${currentPostPage}`;
+      let url = `/api/user/get_posts/${params.id}?page=${currentPostPage}`;
       let status = null;
       fetch(url, {
         method: "GET",
@@ -207,7 +203,7 @@ const ViewProfile = () => {
     return () => {
       controller.abort();
     };
-  }, [currentPostPage, params.id, backendUrl, refresh]);
+  }, [currentPostPage, params.id, refresh]);
 
   // Handles changes to the current followers and current following search
   const handleSearchChange = (type: "followers" | "following") => {

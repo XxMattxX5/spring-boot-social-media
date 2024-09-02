@@ -198,6 +198,10 @@
   height: 600px;
   overflow-y: scroll;
 }
+.dashboard_post_content > div {
+  flex-grow: 1;
+}
+
 .dashboard_post_content_scroll {
   display: flex;
   flex-wrap: wrap;

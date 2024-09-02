@@ -22,9 +22,6 @@ const Settings = () => {
   const [profileVisibility, setProfileVisibility] = useState(
     settings?.profileVisibility
   );
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   // Handles changes to the allow follows setting
   const handleAllowFollowsChange = (e: SelectChangeEvent) => {
@@ -56,7 +53,7 @@ const Settings = () => {
     const headers = {
       "Content-Type": "application/json",
     };
-    await fetch(`${backendUrl}/user/update_settings`, {
+    await fetch(`/api/user/update_settings`, {
       method: "PATCH",
       headers: headers,
       credentials: "include",
@@ -86,15 +83,7 @@ const Settings = () => {
         updateSettings();
       }
     }
-  }, [
-    backendUrl,
-    colorTheme,
-    fetchUser,
-    allowFollows,
-    profileVisibility,
-    refresh,
-    router,
-  ]);
+  }, [colorTheme, fetchUser, allowFollows, profileVisibility, refresh, router]);
 
   // Handles updating settings
   useEffect(() => {

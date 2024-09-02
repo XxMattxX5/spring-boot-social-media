@@ -164,12 +164,10 @@ public class UserController {
       access.setPath("/");
       access.setMaxAge(0);
 
-      Cookie newUsername = new Cookie("username", updateInfoDto.getUsername());
-      newUsername.setPath("/");
-      newUsername.setMaxAge(refreshExpires / 1000);
+      response.addHeader("Set-Cookie", "username=" + updateInfoDto.getUsername() + "; Path=/; SameSite=Lax; Max-Age=" + (refreshExpires / 1000));
 
       response.addCookie(access);
-      response.addCookie(newUsername);
+      // response.addCookie(newUsername);
       response.setStatus(200);
     }
 
@@ -234,11 +232,9 @@ public class UserController {
     String expires = System.getenv("REFRESH_EXPIRES");
     int refreshExpires = Integer.parseInt(expires);
 
-    Cookie theme = new Cookie("theme", settings.getColorTheme());
-    theme.setPath("/");
-    theme.setMaxAge(refreshExpires / 1000);
-
-    response.addCookie(theme);
+    response.addHeader("Set-Cookie", "theme=" + settings.getColorTheme() + "; Path=/; SameSite=Lax; Max-Age=" + (refreshExpires / 1000));
+    
+    // response.addCookie(theme);
 
     settingsRepository.save(settings);
     response.setStatus(200);

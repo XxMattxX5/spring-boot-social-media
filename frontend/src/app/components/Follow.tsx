@@ -29,10 +29,6 @@ const Follow = ({ type }: Props) => {
   const [followPageCount, setFollowPageCount] = useState(0); // List of follow pages
   const [currentPage, setCurrentPage] = useState(1); // Current page being viewed
 
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-
   // Handles user follow search input
   const handleFollowSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFollowSearch(e.target.value);
@@ -49,7 +45,7 @@ const Follow = ({ type }: Props) => {
   useEffect(() => {
     const controller = new AbortController();
     const getFollows = async () => {
-      let url = `${backendUrl}/follow/${
+      let url = `/api/follow/${
         type == "followers" ? "followers" : "following"
       }`;
       if (currentSearch) {
@@ -95,7 +91,7 @@ const Follow = ({ type }: Props) => {
     return () => {
       controller.abort();
     };
-  }, [currentSearch, currentPage, backendUrl, type, refresh]);
+  }, [currentSearch, currentPage, type, refresh]);
 
   return (
     <Grid container id={styles.following_container}>

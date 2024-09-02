@@ -34,9 +34,6 @@ type Props = { children: React.ReactNode };
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: Props) => {
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const [cookies, setCookies] = useCookies(["isLogged", "username"]); // User's cookies
   // Gets User's info from localstorage
   const userInfo =
@@ -50,6 +47,7 @@ export const AuthProvider = ({ children }: Props) => {
     settingsInfo ? JSON.parse(settingsInfo) : null
   );
 
+  const router = useRouter();
   let refreshPromise: Promise<boolean | null> | null = null; // Holds refresh token promise
 
   // Fetchs user's info and settings
@@ -58,7 +56,7 @@ export const AuthProvider = ({ children }: Props) => {
     const headers = {
       Accept: "application/json",
     };
-    await fetch(`${backendUrl}/user/info`, {
+    await fetch(`/api/user/info`, {
       method: "GET",
       headers: headers,
       credentials: "include",
@@ -104,7 +102,8 @@ export const AuthProvider = ({ children }: Props) => {
       "Content-Type": "application/json",
     };
     let message = "";
-    await fetch(`${backendUrl}/auth/login`, {
+
+    await fetch(`/api/auth/login`, {
       method: "POST",
       headers: headers,
       credentials: "include",
@@ -132,15 +131,11 @@ export const AuthProvider = ({ children }: Props) => {
 
   // Logs out user
   const logout = async () => {
-    setUser(null);
-    setSettings(null);
-    localStorage.removeItem("settings");
-    localStorage.removeItem("user");
-    fetch(`${backendUrl}/auth/logout`, {
+    fetch(`/api/auth/logout`, {
       credentials: "include",
       method: "DELETE",
     })
-      .then(() => window.location.reload())
+      .then(() => router.refresh())
       .catch((error) => console.log(error));
   };
 
@@ -150,7 +145,7 @@ export const AuthProvider = ({ children }: Props) => {
       return await refreshPromise;
     }
 
-    refreshPromise = fetch(`${backendUrl}/auth/refresh`, {
+    refreshPromise = fetch(`/api/auth/refresh`, {
       headers: {
         Accept: "application/json",
       },
@@ -161,12 +156,11 @@ export const AuthProvider = ({ children }: Props) => {
         if (res.ok) {
           return true;
         } else {
-          sessionStorage.setItem("status", String(res.status));
           throw new Error("Token not valid");
         }
       })
       .catch((error) => {
-        console.log("Error refreshing tokens: " + JSON.stringify(error));
+        console.log("Error refreshing tokens: " + error);
         logout();
         return false;
       })
@@ -198,7 +192,10 @@ export const AuthProvider = ({ children }: Props) => {
     if (cookies.isLogged == true && user == null) {
       fetchUser();
     } else if (cookies.isLogged != true && user != null) {
-      logout();
+      setUser(null);
+      setSettings(null);
+      localStorage.removeItem("settings");
+      localStorage.removeItem("user");
     }
   });
 

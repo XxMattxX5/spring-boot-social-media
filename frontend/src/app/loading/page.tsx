@@ -28,6 +28,8 @@ const Loading = () => {
       await refresh().then((res) => {
         if (res != null) {
           setRefreshed(res);
+        } else {
+          setRefreshed(false);
         }
       });
     };

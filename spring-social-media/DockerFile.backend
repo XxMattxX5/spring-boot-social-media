@@ -6,6 +6,8 @@ COPY .mvn/ .mvn
 
 COPY mvnw pom.xml ./
 
+COPY config/service-account-file.json ./config/service-account-file.json
+
 RUN ./mvnw dependency:resolve
 
 COPY src ./src

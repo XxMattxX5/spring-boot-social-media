@@ -34,9 +34,6 @@ const RegisterForm = () => {
     error4: "",
     error5: "",
   });
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   // Attempts to register user account
   const register = () => {
@@ -64,7 +61,7 @@ const RegisterForm = () => {
       "Content-Type": "application/json",
     };
 
-    fetch(`${backendUrl}/auth/signup`, {
+    fetch(`/api/auth/signup`, {
       method: "POST",
       headers: headers,
       body: JSON.stringify({

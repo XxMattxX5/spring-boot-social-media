@@ -20,9 +20,6 @@ const AccountDetails = () => {
   const [errors, setErrors] = useState({ error1: "", error2: "" }); // Error messages
   const [success, setSuccess] = useState(""); // Success message
   const [deleteError, setDeleteError] = useState(""); // Delete account error
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   // Sets user info on mount
   useEffect(() => {
@@ -38,7 +35,7 @@ const AccountDetails = () => {
       "Content-Type": "application/json",
     };
     let status = null;
-    await fetch(`${backendUrl}/user/update_info`, {
+    await fetch(`/api/user/update_info`, {
       method: "PATCH",
       headers: headers,
       credentials: "include",
@@ -98,7 +95,7 @@ const AccountDetails = () => {
       )
     ) {
       let status = null;
-      fetch(`${backendUrl}/user/delete`, {
+      fetch(`/api/user/delete`, {
         method: "DELETE",
         credentials: "include",
       })

@@ -97,6 +97,11 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>4.0.1</version> 
 		</dependency>
+		<dependency>
+			<groupId>com.google.cloud.sql</groupId>
+			<artifactId>postgres-socket-factory</artifactId>
+			<version>1.4.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

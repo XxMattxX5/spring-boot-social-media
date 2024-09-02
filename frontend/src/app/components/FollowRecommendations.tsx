@@ -14,9 +14,6 @@ type Recommendation = {
 const FollowRecommendations = () => {
   const { settings, refresh } = useAuth();
   const theme = settings?.colorTheme || "light"; // User's selected theem
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]); // List of follow recommendations
 
   // Removes recommendation if user follows them
@@ -28,7 +25,7 @@ const FollowRecommendations = () => {
   useEffect(() => {
     const getRecommendations = async () => {
       let status = null;
-      await fetch(`${backendUrl}/follow/recommendations`, {
+      await fetch(`/api/follow/recommendations`, {
         method: "GET",
         credentials: "include",
       })
@@ -57,13 +54,13 @@ const FollowRecommendations = () => {
       }
     };
     getRecommendations();
-  }, [backendUrl, refresh]);
+  }, [refresh]);
 
   // Follows user
   const follow = async (userId: number) => {
     let status = null;
 
-    await fetch(`${backendUrl}/follow/${userId}`, {
+    await fetch(`/api/follow/${userId}`, {
       method: "POST",
       credentials: "include",
     })

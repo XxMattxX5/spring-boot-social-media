@@ -30,9 +30,6 @@ type Post = {
 
 const Dashboard = () => {
   const { settings, refresh } = useAuth();
-  // Url for backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
   const theme = settings?.colorTheme || "light"; // User's selected theme
   const [followers, setFollowers] = useState<Follow[]>([]); // List of followers
   const [followerCount, setFollowerCount] = useState(0); // Number of followers
@@ -90,7 +87,7 @@ const Dashboard = () => {
   // Gets list of followers
   const getFollowers = useCallback(
     async (sig?: AbortSignal) => {
-      let url = `${backendUrl}/follow/${"followers"}?page=${currentFollowerPage}`;
+      let url = `/api/follow/${"followers"}?page=${currentFollowerPage}`;
 
       if (currentSearchFollower) {
         url += `&search=${currentSearchFollower}`;
@@ -131,13 +128,13 @@ const Dashboard = () => {
         }
       }
     },
-    [currentSearchFollower, currentFollowerPage, backendUrl, refresh]
+    [currentSearchFollower, currentFollowerPage, refresh]
   );
 
   // Gets list of following
   const getFollowing = useCallback(
     async (sig?: AbortSignal) => {
-      let url = `${backendUrl}/follow/${"following"}?page=${currentFollowingPage}`;
+      let url = `/api/follow/${"following"}?page=${currentFollowingPage}`;
 
       if (currentSearchFollowing) {
         url += `&search=${currentSearchFollowing}`;
@@ -178,14 +175,14 @@ const Dashboard = () => {
         }
       }
     },
-    [currentSearchFollowing, currentFollowingPage, backendUrl, refresh]
+    [currentSearchFollowing, currentFollowingPage, refresh]
   );
 
   // Unfollows user
   const unFollow = async (userId: number) => {
     let status = null;
 
-    await fetch(`${backendUrl}/follow/${userId}`, {
+    await fetch(`/api/follow/${userId}`, {
       method: "POST",
       credentials: "include",
     })
@@ -210,7 +207,7 @@ const Dashboard = () => {
   // Gets a list of posts
   const getPosts = useCallback(
     async (sig?: AbortSignal) => {
-      let url = `${backendUrl}/post/me?page=${currentPostPage}`;
+      let url = `/api/post/me?page=${currentPostPage}`;
       let status = null;
       fetch(url, {
         method: "GET",
@@ -246,7 +243,7 @@ const Dashboard = () => {
         }
       }
     },
-    [currentPostPage, backendUrl, refresh]
+    [currentPostPage, refresh]
   );
 
   // Handles unfollowing a user
@@ -271,7 +268,7 @@ const Dashboard = () => {
   // Blocks a follower
   const blockFollower = async (userId: number) => {
     let status = null;
-    await fetch(`${backendUrl}/block/${userId}`, {
+    await fetch(`/api/block/${userId}`, {
       method: "POST",
       credentials: "include",
     })

@@ -17,14 +17,11 @@ const ProfileImage = () => {
   const theme = settings?.colorTheme || "light"; // User's selected theme
   const profile_picture = user?.profilePicture || ""; // User's profile picture
   const uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET || ""; // Cloudinary upload preset
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   // Upload new profile picture
   const updatePicture = async (imageUrl: string) => {
     let status = null;
-    await fetch(`${backendUrl}/user/profile_picture`, {
+    await fetch(`/api/user/profile_picture`, {
       method: "PATCH",
       credentials: "include",
       headers: {

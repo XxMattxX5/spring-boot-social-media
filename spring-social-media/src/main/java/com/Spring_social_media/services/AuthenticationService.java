@@ -128,52 +128,19 @@ public class AuthenticationService {
 
     // Sets crediental cookies in response
     public HttpServletResponse setCredentials(HttpServletResponse response, String jwtToken, RefreshToken refreshToken, String deviceId) {
-
-        // Sets access token cookie
-        Cookie accessCookie = new Cookie("access_token",  jwtToken);
-        accessCookie.setMaxAge((int) jwtService.getExpirationTime() / 1000);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
-        accessCookie.setPath("/");
-
         Long currentEpochSeconds = Instant.now().getEpochSecond();
 
-        // Sets refresh token cookie
-        Cookie refreshCookie = new Cookie("refresh_token", refreshToken.getToken());
-        refreshCookie.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/auth/refresh");
+        response.addHeader("Set-Cookie", "access_token=" + jwtToken + "; Path=/; HttpOnly; SameSite=Lax; Max-Age=" + ((int) jwtService.getExpirationTime() / 1000));
+        
+        response.addHeader("Set-Cookie", "refresh_token=" + refreshToken.getToken() + "; Path=/api/auth/refresh; HttpOnly; SameSite=Lax; Max-Age=" + ((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds)));
 
-        // Sets username cookie
-        Cookie username = new Cookie("username", refreshToken.getUser().getUsername());
-        username.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
-        username.setHttpOnly(false);
-        username.setSecure(true);
-        username.setPath("/");
+        response.addHeader("Set-Cookie", "username=" + refreshToken.getUser().getUsername() + "; Path=/; SameSite=Lax; Max-Age=" + ((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds)));
 
-        // Sets deviceId cookie
-        Cookie deviceID = new Cookie("deviceId", deviceId);
-        deviceID.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
-        deviceID.setHttpOnly(true);
-        deviceID.setSecure(true);
-        deviceID.setPath("/");
+        response.addHeader("Set-Cookie", "deviceId=" + deviceId + "; Path=/; HttpOnly; SameSite=Lax; Max-Age=" + ((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds)));
 
-        Cookie isLogged = new Cookie("isLogged", "true");
-        isLogged.setPath("/");
-        isLogged.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
+        response.addHeader("Set-Cookie", "isLogged=true; Path=/; SameSite=Lax; Max-Age=" + ((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds)));
 
-        Cookie theme = new Cookie("theme", refreshToken.getUser().getSettings().getColorTheme());
-        theme.setPath("/");
-        theme.setMaxAge((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds));
-
-        // Adds all the cookies to the response
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
-        response.addCookie(username);
-        response.addCookie(deviceID);
-        response.addCookie(isLogged);
-        response.addCookie(theme);
+        response.addHeader("Set-Cookie", "theme=" + refreshToken.getUser().getSettings().getColorTheme() + "; Path=/;  SameSite=Lax; Max-Age=" + ((int) (refreshToken.getExpiryDate().getEpochSecond() - currentEpochSeconds)));
 
         return response;
     }
@@ -186,10 +153,11 @@ public class AuthenticationService {
         accessCookie.setMaxAge(0);
         accessCookie.setPath("/");
         
+        
         // Clears the refresh_token cookie
         Cookie refreshCookie = new Cookie("refresh_token", "");
         refreshCookie.setMaxAge(0);
-        refreshCookie.setPath("/auth/refresh");
+        refreshCookie.setPath("/api/auth/refresh");
 
         // Clears the username cookie
         Cookie username = new Cookie("username", "");
@@ -204,6 +172,7 @@ public class AuthenticationService {
         Cookie isLogged = new Cookie("isLogged", "");
         isLogged.setMaxAge(0);
         isLogged.setPath("/");
+
         Cookie theme = new Cookie("theme", "");
         theme.setMaxAge(0);
         theme.setPath("/");

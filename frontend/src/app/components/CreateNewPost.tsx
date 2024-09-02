@@ -23,9 +23,6 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
   const router = useRouter();
   const [blockScroll, allowScroll] = useScrollBlock(); // Used to allow or block scroll
   const { settings, refresh } = useAuth();
-  // Url for the backend
-  const backendUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
   const theme = settings?.colorTheme || "light"; // User's selected theme
   const [content, setContent] = useState<string>(""); // Content for new post
@@ -50,7 +47,7 @@ const CreateNewPost = ({ displayMenuClose }: Props) => {
       "Content-Type": "application/json",
     };
     let status = null;
-    await fetch(`${backendUrl}/post/create`, {
+    await fetch(`/api/post/create`, {
       headers: headers,
       method: "POST",
       credentials: "include",

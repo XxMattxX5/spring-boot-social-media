@@ -8,4 +8,9 @@ RUN npm install
 
 COPY . .
 
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="drk8ctpvl"
+ENV NEXT_PUBLIC_UPLOAD_PRESET="wvz56hfr"
+
+RUN npm run build
+
 EXPOSE 3000
