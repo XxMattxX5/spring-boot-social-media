@@ -19,7 +19,6 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
   const { refresh } = useAuth();
   const [cookies, setCookies] = useCookies(["isLogged"]); // User's cookies
   const isLogged = cookies.isLogged == true ? true : false; // User's login status
-  const backendUrl = process.env.BACKEND_URL || "http://localhost:8080"; // Url for the backend
   const [isLiked, setIsLiked] = useState(false); // Whether user has liked post already or not
   const [likeCount, setLikeCount] = useState(likes); // Number of likes on post
   const [isFollowed, setIsFollowed] = useState(false); // Whether user is already following or not
@@ -34,7 +33,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
   useEffect(() => {
     const postInfo = async () => {
       let status = null;
-      await fetch(`${backendUrl}/post/post_info/${postId}`, {
+      await fetch(`/api/post/post_info/${postId}`, {
         method: "GET",
         credentials: "include",
       })
@@ -63,12 +62,12 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
       }
     };
     postInfo();
-  }, [backendUrl, postId, refresh]);
+  }, [postId, refresh]);
 
   // Likes the posts
   const likePost = async () => {
     let status = null;
-    await fetch(`${backendUrl}/like/${postId}`, {
+    await fetch(`/api/like/${postId}`, {
       method: "POST",
       credentials: "include",
     })
@@ -96,7 +95,7 @@ const PostBottomBar = ({ postId, likes, username, userId }: Props) => {
   const follow = async () => {
     let status = null;
 
-    await fetch(`${backendUrl}/follow/${userId}`, {
+    await fetch(`/api/follow/${userId}`, {
       method: "POST",
       credentials: "include",
     })
